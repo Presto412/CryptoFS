@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include partials/nav %>
+    <h1><%= title %></h1>
+    <% if(success) { %>
+    <p style="color: forestgreen;"><%= message %></p>
+    <% } else { %>
+    <p style="color: red;"><%= message %></p>
+    <% } %>
+    <p>Upload any file</p>
+    <form
+      action="/upload"
+      method="post"
+      name="fileUpload"
+      enctype="multipart/form-data"
+    >
+      <input type="file" name="uploadFile" id="fileItem" required />
+      <input type="button" onClick="submitFile()" value="Submit" />
+      <input type="text" name="fileContentHash" id="fileContentHash" hidden />
+      <input type="text" name="msg" id="msg" hidden />
+      <input type="text" name="signature" id="signature" hidden />
+      <input type="text" name="publicKey" id="publicKey" hidden />
+    </form>
+  </body>
+  <script src="https://unpkg.com/node-forge@0.7.6/dist/forge.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+  <!-- <script src="/jsencrypt/bin/jsencrypt.min.js"></script> -->
+  <script type="text/javascript">
+    const onSuccessHashCheck = (response) => {
+      console.log(response);
+      if (!response.success) {
+        document.forms["fileUpload"].submit();
+      } else {
+        console.log(response);
+      }
+    };
+
+    function submitFile() {
+      var ed25519 = forge.pki.ed25519;
+
+      var form = document.forms["fileUpload"];
+      var reader = new FileReader();
+      reader.onload = function () {
+        var fileContent = reader.result;
+        var md = forge.md.sha1.create();
+        md.update(fileContent);
+        var fileContenthash = md.digest().toHex();
+        var keypair = {
+          publicKey: localStorage.pubkey,
+          privateKey: localStorage.privkey,
+        };
+
+        if (!keypair.privateKey && !keypair.publicKey) {
+          keypair = ed25519.generateKeyPair();
+          //console.log(keypair);
+          localStorage.setItem("pubkey", keypair.publicKey);
+          localStorage.setItem("privkey", keypair.privateKey);
+        } else {
+          keypair.publicKey = new Uint8Array(keypair.publicKey.split(","));
+          keypair.privateKey = new Uint8Array(keypair.privateKey.split(","));
+        }
+        var signature = ed25519.sign({
+          message: "test",
+          encoding: "utf8",
+          privateKey: keypair.privateKey,
+        });
+
+        $('input[name="fileContentHash"]').val(fileContenthash);
+        $('input[name="msg"]').val("test");
+        $('input[name="signature"]').val(signature.toString());
+        $('input[name="publicKey"]').val(keypair.publicKey.toString());
+        document.forms["fileUpload"].submit();
+      };
+      var file = document.getElementById("fileItem").files[0];
+      reader.readAsBinaryString(file);
+    }
+  </script>
+</html>
