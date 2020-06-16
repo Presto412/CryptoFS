@@ -1,21 +1,22 @@
-var forge = require("node-forge");
-var ed25519 = forge.ed25519;
-var User = require("../models/user");
+const forge = require('node-forge');
+
+const { ed25519 } = forge;
+const User = require('../models/user');
 
 module.exports.DSVerify = async function (req, res, next) {
-  let signature = req.body.signature ? req.body.signature : req.headers.signature;
-  let publicKey = req.body.publicKey ? req.body.publicKey : req.headers.publickey;
-  let msg = req.body.msg ? req.body.msg : req.headers.msg;
-  var verified = ed25519.verify({
+  const signature = req.body.signature ? req.body.signature : req.headers.signature;
+  const publicKey = req.body.publicKey ? req.body.publicKey : req.headers.publickey;
+  const msg = req.body.msg ? req.body.msg : req.headers.msg;
+  const verified = ed25519.verify({
     message: msg,
-    encoding: "utf8",
+    encoding: 'utf8',
     // node.js Buffer, Uint8Array, forge ByteBuffer, or binary string
-    signature: new Uint8Array(signature.split(",")),
+    signature: new Uint8Array(signature.split(',')),
     // node.js Buffer, Uint8Array, forge ByteBuffer, or binary string
-    publicKey: new Uint8Array(publicKey.split(","))
+    publicKey: new Uint8Array(publicKey.split(',')),
   });
   if (verified) {
-    var user = await User.findOne({ publicKey }).populate('filesUploaded');
+    let user = await User.findOne({ publicKey }).populate('filesUploaded');
     if (user) {
       req.user = user;
     } else {
@@ -25,7 +26,6 @@ module.exports.DSVerify = async function (req, res, next) {
       req.user = user;
     }
     return next();
-  } else {
-    return next(new Error("Not a valid user"));
   }
+  return next(new Error('Not a valid user'));
 };

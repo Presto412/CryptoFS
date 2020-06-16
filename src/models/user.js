@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const encrypt = require("mongoose-encryption");
+const mongoose = require('mongoose');
+const encrypt = require('mongoose-encryption');
 
 const userSchema = mongoose.Schema(
   {
@@ -10,20 +10,20 @@ const userSchema = mongoose.Schema(
         metaData: {
           filename: String,
           dateUploaded: String,
-          size: String
-        }
-      }
-    ]
+          size: String,
+        },
+      },
+    ],
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
 userSchema.plugin(encrypt, {
   encryptionKey: process.env.ENCRYPTION_KEY,
   signingKey: process.env.SIGNING_KEY,
-  excludeFromEncryption: ["publicKey"]
+  excludeFromEncryption: ['publicKey'],
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);

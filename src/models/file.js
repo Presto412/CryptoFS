@@ -1,20 +1,20 @@
-const mongoose = require("mongoose");
-const encrypt = require("mongoose-encryption");
+const mongoose = require('mongoose');
+const encrypt = require('mongoose-encryption');
 
 const fileSchema = mongoose.Schema(
   {
     fileContentHash: String,
-    paths: [String]
+    paths: [String],
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
 fileSchema.plugin(encrypt, {
   encryptionKey: process.env.ENCRYPTION_KEY,
   signingKey: process.env.SIGNING_KEY,
-  excludeFromEncryption: ["fileContentHash"]
+  excludeFromEncryption: ['fileContentHash'],
 });
 
-module.exports = mongoose.model("File", fileSchema);
+module.exports = mongoose.model('File', fileSchema);

@@ -7,16 +7,13 @@
     </section>
     <% if(message) {%>
     <script>
-      $("#navSuccessMessage").html("<%= message %>");
-      $("#navSuccess").show();
+      $('#navSuccessMessage').html('<%= message %>');
+      $('#navSuccess').show();
     </script>
     <% } %>
     <section class="section">
       <div class="table-container">
-        <table
-          id="table1"
-          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-        >
+        <table id="table1" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
           <thead>
             <tr>
               <th>
@@ -38,12 +35,7 @@
       </div>
     </section>
 
-    <form
-      action="/download"
-      method="POST"
-      name="fileDownload"
-      id="fileDownload"
-    >
+    <form action="/download" method="POST" name="fileDownload" id="fileDownload">
       <input type="text" name="fileContentHash" id="fileContentHash" hidden />
       <input type="text" name="msg" id="msg" hidden />
       <input type="text" name="signature" id="signature" hidden />
@@ -66,14 +58,14 @@
     };
 
     if (!keypair.privateKey && !keypair.publicKey) {
-      $("#navFailureMessage").html("Please upload/generate keys to view list");
-      $("#navFailure").show();
+      $('#navFailureMessage').html('Please upload/generate keys to view list');
+      $('#navFailure').show();
     } else {
-      keypair.publicKey = new Uint8Array(keypair.publicKey.split(","));
-      keypair.privateKey = new Uint8Array(keypair.privateKey.split(","));
+      keypair.publicKey = new Uint8Array(keypair.publicKey.split(','));
+      keypair.privateKey = new Uint8Array(keypair.privateKey.split(','));
       signature = ed25519.sign({
-        message: "test",
-        encoding: "utf8",
+        message: 'test',
+        encoding: 'utf8',
         privateKey: keypair.privateKey,
       });
     }
@@ -82,42 +74,36 @@
     $(document).ready(function () {
       if (keypair.publicKey && keypair.privateKey) {
         $.ajax({
-          type: "GET",
-          url: "/listFiles",
+          type: 'GET',
+          url: '/listFiles',
           headers: {
-            msg: "test",
+            msg: 'test',
             signature: signature,
             publickey: keypair.publicKey,
           },
-          contentType: "application/json;charset=utf-8",
+          contentType: 'application/json;charset=utf-8',
           success: function (response) {
             console.log(response);
-            var table = document.getElementById("table1");
+            var table = document.getElementById('table1');
             response.map.forEach(function (element, index) {
-              var tr = document.createElement("tr");
-              var td1 = document.createElement("td");
+              var tr = document.createElement('tr');
+              var td1 = document.createElement('td');
               td1.innerHTML = element.metaData.filename;
-              var td2 = document.createElement("td");
+              var td2 = document.createElement('td');
               td2.innerHTML = element.metaData.dateUploaded;
-              var td3 = document.createElement("td");
+              var td3 = document.createElement('td');
               td3.innerHTML = element.fileContentHash;
-              var td4 = document.createElement("td");
-              var button = document.createElement("button");
-              button.setAttribute(
-                "onclick",
-                "downloadFile('" + element.fileContentHash + "')"
-              );
-              button.setAttribute("class", "button is-info");
-              button.innerHTML = "Download";
+              var td4 = document.createElement('td');
+              var button = document.createElement('button');
+              button.setAttribute('onclick', "downloadFile('" + element.fileContentHash + "')");
+              button.setAttribute('class', 'button is-info');
+              button.innerHTML = 'Download';
               td4.appendChild(button);
-              var td5 = document.createElement("td");
-              var button = document.createElement("button");
-              button.setAttribute(
-                "onclick",
-                "deleteFile('" + element.fileContentHash + "')"
-              );
-              button.setAttribute("class", "button is-danger");
-              button.innerHTML = "Delete";
+              var td5 = document.createElement('td');
+              var button = document.createElement('button');
+              button.setAttribute('onclick', "deleteFile('" + element.fileContentHash + "')");
+              button.setAttribute('class', 'button is-danger');
+              button.innerHTML = 'Delete';
               td5.appendChild(button);
               tr.appendChild(td1);
               tr.appendChild(td2);
@@ -136,21 +122,19 @@
   </script>
   <script>
     function updateFormContents(formId, fileContentHash) {
-      $("#" + formId + ' input[name="fileContentHash"]').val(fileContentHash);
-      $("#" + formId + ' input[name="msg"]').val("test");
-      $("#" + formId + ' input[name="signature"]').val(signature.toString());
-      $("#" + formId + ' input[name="publicKey"]').val(
-        keypair.publicKey.toString()
-      );
+      $('#' + formId + ' input[name="fileContentHash"]').val(fileContentHash);
+      $('#' + formId + ' input[name="msg"]').val('test');
+      $('#' + formId + ' input[name="signature"]').val(signature.toString());
+      $('#' + formId + ' input[name="publicKey"]').val(keypair.publicKey.toString());
     }
 
     function downloadFile(fileContentHash) {
-      updateFormContents("fileDownload", fileContentHash);
-      document.forms["fileDownload"].submit();
+      updateFormContents('fileDownload', fileContentHash);
+      document.forms['fileDownload'].submit();
     }
     function deleteFile(fileContentHash) {
-      updateFormContents("fileDelete", fileContentHash);
-      document.forms["fileDelete"].submit();
+      updateFormContents('fileDelete', fileContentHash);
+      document.forms['fileDelete'].submit();
     }
   </script>
 </html>
