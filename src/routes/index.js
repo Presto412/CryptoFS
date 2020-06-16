@@ -2,13 +2,14 @@ var express = require("express");
 var router = express.Router();
 var multer = require("multer");
 var upload = multer({
-  dest: "/tmp/uploads/",
-  limits: { fileSize: process.env.MAX_FILE_SIZE || 1024 * 1024 * 1024 },
-}); // 1 gb
+  dest: process.env.UPLOAD_PATH || "/tmp/uploads/",
+  limits: { fileSize: process.env.MAX_FILE_SIZE || 1024 * 1024 * 10 },
+}); // 10 mb
 const fs = require("fs");
 const User = require("../models/user");
 const File = require("../models/file");
 const crypto = require("crypto");
+const file = require("../models/file");
 const isVerified = require("../middleware/verify").DSVerify;
 
 router.get("/", (req, res) => {
@@ -27,25 +28,13 @@ const createOrUpdateUser = async (publicKey, fileData) => {
       filesUploaded: [fileData],
     });
   } else {
+    if (user.filesUploaded.length == process.env.MAX_NUM_UPLOADS) {
+      throw new Error("Max upload limit reached. Can only upload a maximum of " + process.env.MAX_NUM_UPLOADS + " files.")
+    }
     user.filesUploaded.push(fileData);
   }
   await user.save();
 };
-// map user to stuff
-
-router.post("/checkHash", isVerified, async (req, res, next) => {
-  let hash = await File.findOne({ fileContentHash: req.body.fileHash });
-  if (!hash) {
-    return res.json({
-      success: false,
-      message: "Hash not found",
-    });
-  }
-  return res.json({
-    success: true,
-    message: "File already exists",
-  });
-});
 
 const getFileHash = (path) => {
   return new Promise(function (resolve, reject) {
@@ -126,7 +115,7 @@ router.post(
 );
 
 router.get("/list", (req, res) => {
-  res.render("list", { map: [], message: "" });
+  res.render("list", { message: "" });
 });
 
 router.get("/listFiles", isVerified, async (req, res, next) => {
@@ -169,6 +158,17 @@ router.post("/download", isVerified, async (req, res, next) => {
     const time2 = Date.now();
     console.log("time taken for download", time2 - time1);
     return res.download(file.paths[0], userFileHashes[0].metaData.filename);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.post("/delete", isVerified, async (req, res, next) => {
+  try {
+    const { fileContentHash } = req.body;
+    req.user.filesUploaded = req.user.filesUploaded.toObject().filter(o => o.fileContentHash !== fileContentHash);
+    await req.user.save();
+    return res.render("list", { message: "Deleted file!" });
   } catch (error) {
     return next(error);
   }

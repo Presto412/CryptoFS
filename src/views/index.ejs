@@ -1,47 +1,84 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
+  <%- include partials/head %>
   <body>
-    <%- include partials/nav %>
-    <h1><%= title %></h1>
-    <% if(success) { %>
-    <p style="color: forestgreen;"><%= message %></p>
-    <% } else { %>
-    <p style="color: red;"><%= message %></p>
+    <section>
+      <%- include partials/nav %>
+    </section>
+    <section class="section">
+      <p class="title is-1"><%= title %></p>
+      <p class="subtitle is-6">Upload any file</p>
+    </section>
+    <% if(success && message != "") { %>
+    <article class="message is-success">
+      <div class="message-body">
+        <p><%= message %></p>
+      </div>
+    </article>
+    <% } else if(message != ""){ %>
+    <article class="message is-danger">
+      <div class="message-body">
+        <p><%= message %></p>
+      </div>
+    </article>
     <% } %>
-    <p>Upload any file</p>
-    <form
-      action="/upload"
-      method="post"
-      name="fileUpload"
-      enctype="multipart/form-data"
-    >
-      <input type="file" name="uploadFile" id="fileItem" required />
-      <input type="button" onClick="submitFile()" value="Submit" />
-      <input type="text" name="fileContentHash" id="fileContentHash" hidden />
-      <input type="text" name="msg" id="msg" hidden />
-      <input type="text" name="signature" id="signature" hidden />
-      <input type="text" name="publicKey" id="publicKey" hidden />
-    </form>
+    <section class="section">
+      <form
+        action="/upload"
+        method="post"
+        name="fileUpload"
+        enctype="multipart/form-data"
+      >
+        <div class="field is-grouped">
+          <div class="control">
+            <div id="uploadFileDiv" class="file has-name">
+              <label class="file-label">
+                <input
+                  class="file-input"
+                  type="file"
+                  name="uploadFile"
+                  id="uploadFile"
+                  required
+                />
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Choose a file…
+                  </span>
+                </span>
+                <span class="file-name">
+                  File not uploaded
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="control">
+            <button id="submitFileBtn" class="button is-info is-rounded">
+              Submit
+            </button>
+          </div>
+        </div>
+        <input type="text" name="fileContentHash" id="fileContentHash" hidden />
+        <input type="text" name="msg" id="msg" hidden />
+        <input type="text" name="signature" id="signature" hidden />
+        <input type="text" name="publicKey" id="publicKey" hidden />
+      </form>
+    </section>
   </body>
-  <script src="https://unpkg.com/node-forge@0.7.6/dist/forge.min.js"></script>
-  <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
-  <!-- <script src="/jsencrypt/bin/jsencrypt.min.js"></script> -->
-  <script type="text/javascript">
-    const onSuccessHashCheck = (response) => {
-      console.log(response);
-      if (!response.success) {
-        document.forms["fileUpload"].submit();
-      } else {
-        console.log(response);
+  <script>
+    const fileInput = document.querySelector("#uploadFileDiv input[type=file]");
+    fileInput.onchange = () => {
+      if (fileInput.files.length > 0) {
+        const fileName = document.querySelector("#uploadFileDiv .file-name");
+        fileName.textContent = fileInput.files[0].name;
       }
     };
-
-    function submitFile() {
+  </script>
+  <script>
+    $("#submitFileBtn").click((e) => {
+      e.preventDefault();
       var ed25519 = forge.pki.ed25519;
 
       var form = document.forms["fileUpload"];
@@ -52,33 +89,33 @@
         md.update(fileContent);
         var fileContenthash = md.digest().toHex();
         var keypair = {
-          publicKey: localStorage.pubkey,
-          privateKey: localStorage.privkey,
+          publicKey: sessionStorage.pubkey,
+          privateKey: sessionStorage.privkey,
         };
 
         if (!keypair.privateKey && !keypair.publicKey) {
-          keypair = ed25519.generateKeyPair();
-          //console.log(keypair);
-          localStorage.setItem("pubkey", keypair.publicKey);
-          localStorage.setItem("privkey", keypair.privateKey);
+          $("#navFailureMessage").html(
+            "Please upload/generate keys to upload file"
+          );
+          $("#navFailure").show();
         } else {
           keypair.publicKey = new Uint8Array(keypair.publicKey.split(","));
           keypair.privateKey = new Uint8Array(keypair.privateKey.split(","));
+          var signature = ed25519.sign({
+            message: "test",
+            encoding: "utf8",
+            privateKey: keypair.privateKey,
+          });
+          console.log(fileContenthash);
+          $('input[name="fileContentHash"]').val(fileContenthash);
+          $('input[name="msg"]').val("test");
+          $('input[name="signature"]').val(signature.toString());
+          $('input[name="publicKey"]').val(keypair.publicKey.toString());
+          document.forms["fileUpload"].submit();
         }
-        var signature = ed25519.sign({
-          message: "test",
-          encoding: "utf8",
-          privateKey: keypair.privateKey,
-        });
-
-        $('input[name="fileContentHash"]').val(fileContenthash);
-        $('input[name="msg"]').val("test");
-        $('input[name="signature"]').val(signature.toString());
-        $('input[name="publicKey"]').val(keypair.publicKey.toString());
-        document.forms["fileUpload"].submit();
       };
-      var file = document.getElementById("fileItem").files[0];
+      var file = document.getElementById("uploadFile").files[0];
       reader.readAsBinaryString(file);
-    }
+    });
   </script>
 </html>

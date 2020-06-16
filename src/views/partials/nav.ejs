@@ -1,4 +1,225 @@
-<div style="margin: 10px; padding:10px">
-  <a href="/">Home</a>
-  <a href="/list">Files</a>
+<nav
+  class="navbar hero is-black"
+  role="navigation"
+  aria-label="main navigation"
+>
+  <div class="navbar-brand">
+    <a id="home" class="navbar-item" href="/">Home</a>
+    <a class="navbar-item" href="/list">Files</a>
+    <a class="navbar-item" onclick="logout()">Logout</a>
+  </div>
+</nav>
+<div id="navMessage">
+  <article class="message is-success" id="navSuccess">
+    <div class="message-body">
+      <p id="navSuccessMessage"></p>
+    </div>
+  </article>
+  <article class="message is-danger" id="navFailure">
+    <div class="message-body">
+      <p id="navFailureMessage"></p>
+    </div>
+  </article>
 </div>
+<div id="keyManagementDiv">
+  <br />
+  <div class="columns">
+    <div class="column is-one-fifth">
+      <section class="section">
+        <button
+          class="button is-dark is-rounded"
+          id="generateKeyValuePairButton"
+          onclick="generateKeyValuePair()"
+        >
+          Generate key-value pair
+        </button>
+      </section>
+    </div>
+    <div class="column is-one-fifth">
+      <section class="section">
+        <p class="title is-2">Or</p>
+      </section>
+    </div>
+    <section class="section">
+      <div id="UploadDiv" class="column tile is-one-fifth">
+        <div id="UploadPubKeyDiv">
+          <div class="field">
+            <div class="control">
+              <label class="label">Upload public key</label>
+            </div>
+            <div class="control">
+              <div id="publicKeyUploadDiv" class="file has-name">
+                <label class="file-label">
+                  <input
+                    class="file-input"
+                    type="file"
+                    name="publicKeyUpload"
+                    id="publicKeyUpload"
+                    required
+                  />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                      Choose a file…
+                    </span>
+                  </span>
+                  <span class="file-name">
+                    File not uploaded
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="UploadPrivKeyDiv">
+          <div class="field">
+            <div class="control">
+              <label class="label">Upload private key</label>
+            </div>
+            <div class="control">
+              <div id="privateKeyUploadDiv" class="file has-name">
+                <label class="file-label">
+                  <input
+                    class="file-input"
+                    type="file"
+                    name="privateKeyUpload"
+                    id="privateKeyUpload"
+                    required
+                  />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                      Choose a file…
+                    </span>
+                  </span>
+                  <span class="file-name">
+                    File not uploaded
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<script>
+  function logout() {
+    sessionStorage.removeItem("pubkey");
+    sessionStorage.removeItem("privkey");
+    location.href = "/";
+  }
+</script>
+<script>
+  $("#navSuccess").hide();
+  $("#navFailure").hide();
+  var downloadBlob, downloadURL;
+  if (sessionStorage.getItem("pubkey") && sessionStorage.getItem("privkey")) {
+    $("#keyManagementDiv").hide();
+  }
+
+  downloadBlob = function (data, fileName, mimeType) {
+    var blob, url;
+    blob = new Blob([data], {
+      type: mimeType,
+    });
+    url = window.URL.createObjectURL(blob);
+    downloadURL(url, fileName);
+    setTimeout(function () {
+      return window.URL.revokeObjectURL(url);
+    }, 1000);
+  };
+
+  downloadURL = function (data, fileName) {
+    var a;
+    a = document.createElement("a");
+    a.href = data;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.click();
+    a.remove();
+  };
+  var keysUploaded = 0;
+
+  $("input[name=publicKeyUpload]").change(function (evt) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      const keyArray = new Uint8Array(reader.result);
+      console.log(keyArray.length);
+
+      if (keyArray.length == 32) {
+        sessionStorage.setItem("pubkey", new Uint8Array(reader.result));
+        $("#UploadPubKeyDiv").hide();
+        $("#navSuccessMessage").html("Successfully uploaded key");
+        $("#navSuccess").show();
+        keysUploaded += 1;
+        if (keysUploaded == 1) {
+          $("#navSuccessMessage").html(
+            "Successfully uploaded key. Upload private key."
+          );
+          $("#navSuccess").show();
+        } else if (keysUploaded == 2) {
+          $("#keyManagementDiv").hide();
+        }
+      } else {
+        $("#navFailureMessage").html(
+          "Incorrect length. Public key must be 32 bytes length"
+        );
+        $("#navFailure").show();
+      }
+    };
+    reader.readAsArrayBuffer(evt.target.files[0]);
+  });
+
+  $("input[name=privateKeyUpload]").change(function (evt) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      const keyArray = new Uint8Array(reader.result);
+      console.log(keyArray.byteLength);
+
+      if (keyArray.length == 64) {
+        sessionStorage.setItem("privkey", new Uint8Array(reader.result));
+        $("#UploadPrivKeyDiv").hide();
+        keysUploaded += 1;
+        if (keysUploaded == 1) {
+          $("#navSuccessMessage").html(
+            "Successfully uploaded key. Upload public key."
+          );
+          $("#navSuccess").show();
+        } else if (keysUploaded == 2) {
+          $("#keyManagementDiv").hide();
+        }
+      } else {
+        $("#navFailureMessage").html(
+          "Incorrect length. Public key must be 64 bytes length"
+        );
+        $("#navFailure").show();
+      }
+    };
+    reader.readAsArrayBuffer(evt.target.files[0]);
+  });
+
+  function generateKeyValuePair() {
+    var keypair = forge.pki.ed25519.generateKeyPair();
+    downloadBlob(
+      keypair.publicKey,
+      "cryptoFs.pub.key",
+      "application/octet-stream"
+    );
+    downloadBlob(
+      keypair.privateKey,
+      "cryptoFs.priv.key",
+      "application/octet-stream"
+    );
+    sessionStorage.setItem("pubkey", keypair.publicKey);
+    sessionStorage.setItem("privkey", keypair.privateKey);
+    $("#keyManagementDiv").hide();
+    return keypair;
+  }
+</script>

@@ -2,7 +2,7 @@ var forge = require("node-forge");
 var ed25519 = forge.ed25519;
 var User = require("../models/user");
 
-module.exports.DSVerify = async function(req, res, next) {
+module.exports.DSVerify = async function (req, res, next) {
   let signature = req.body.signature ? req.body.signature : req.headers.signature;
   let publicKey = req.body.publicKey ? req.body.publicKey : req.headers.publickey;
   let msg = req.body.msg ? req.body.msg : req.headers.msg;
