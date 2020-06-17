@@ -7,22 +7,18 @@ const logger = require('morgan');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
-const envConfig = require('./config/env');
+const mongooseConfig = require('./config/mongoose');
 
 const app = express();
-mongoose
-  .connect(envConfig.MONGO_URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log('Connection successful');
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+
+(async function () {
+  try {
+    await mongoose.connect(mongooseConfig.mongoUri, mongooseConfig.options);
+    console.log('Connection established');
+  } catch (error) {
+    console.log(error);
+  }
+})();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
