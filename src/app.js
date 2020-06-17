@@ -13,7 +13,7 @@ const app = express();
 
 (async function () {
   try {
-    await mongoose.connect(mongooseConfig.mongoUri, mongooseConfig.options);
+    await mongoose.connect(mongooseConfig.url, mongooseConfig.options);
     console.log('Connection established');
   } catch (error) {
     console.log(error);

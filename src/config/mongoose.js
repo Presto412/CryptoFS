@@ -7,5 +7,5 @@ module.exports = {
     useFindAndModify: false,
     useUnifiedTopology: true,
   },
-  mongoUri: envConfig.MONGO_URI,
+  url: envConfig.MONGO_URI,
 };

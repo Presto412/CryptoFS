@@ -3,7 +3,7 @@ const forge = require('node-forge');
 const { ed25519 } = forge;
 const User = require('../models/user');
 
-module.exports.DSVerify = async function (req, res, next) {
+const DSVerify = async function (req, res, next) {
   try {
     const signature = req.body.signature ? req.body.signature : req.headers.signature;
     const publicKey = req.body.publicKey ? req.body.publicKey : req.headers.publickey;
@@ -34,3 +34,5 @@ module.exports.DSVerify = async function (req, res, next) {
     return next(error);
   }
 };
+
+module.exports = { DSVerify };
