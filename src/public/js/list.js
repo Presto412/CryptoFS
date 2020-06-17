@@ -16,12 +16,13 @@ const deleteFile = (fileContentHash) => {
 };
 
 $(document).ready(function () {
-  const { publicKey, privateKey } = getKeysFromStorage();
-  const signature = getSignedMessage();
-  if (!publicKey && !privateKey) {
+  const keyPair = getKeysFromStorage();
+  if (!keyPair) {
     showFailureMessage('Please upload/generate keys to view list');
     return;
   }
+  const signature = getSignedMessage();
+  const { publicKey } = keyPair;
   $.ajax({
     type: 'GET',
     url: '/listFiles',
@@ -70,3 +71,8 @@ $(document).ready(function () {
     },
   });
 });
+
+/**
+ * alert-manager
+ * authentication
+ */
