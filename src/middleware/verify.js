@@ -7,6 +7,7 @@ module.exports.DSVerify = async function (req, res, next) {
   const signature = req.body.signature ? req.body.signature : req.headers.signature;
   const publicKey = req.body.publicKey ? req.body.publicKey : req.headers.publickey;
   const msg = req.body.msg ? req.body.msg : req.headers.msg;
+
   const verified = ed25519.verify({
     message: msg,
     encoding: 'utf8',

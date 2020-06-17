@@ -23,23 +23,12 @@
     </article>
     <% } %>
     <section class="section">
-      <form
-        action="/upload"
-        method="post"
-        name="fileUpload"
-        enctype="multipart/form-data"
-      >
+      <form action="/upload" method="post" id="fileUpload" name="fileUpload" enctype="multipart/form-data">
         <div class="field is-grouped">
           <div class="control">
             <div id="uploadFileDiv" class="file has-name">
               <label class="file-label">
-                <input
-                  class="file-input"
-                  type="file"
-                  name="uploadFile"
-                  id="uploadFile"
-                  required
-                />
+                <input class="file-input" type="file" name="uploadFile" id="uploadFile" required />
                 <span class="file-cta">
                   <span class="file-icon">
                     <i class="fas fa-upload"></i>
@@ -67,55 +56,5 @@
       </form>
     </section>
   </body>
-  <script>
-    const fileInput = document.querySelector("#uploadFileDiv input[type=file]");
-    fileInput.onchange = () => {
-      if (fileInput.files.length > 0) {
-        const fileName = document.querySelector("#uploadFileDiv .file-name");
-        fileName.textContent = fileInput.files[0].name;
-      }
-    };
-  </script>
-  <script>
-    $("#submitFileBtn").click((e) => {
-      e.preventDefault();
-      var ed25519 = forge.pki.ed25519;
-
-      var form = document.forms["fileUpload"];
-      var reader = new FileReader();
-      reader.onload = function () {
-        var fileContent = reader.result;
-        var md = forge.md.sha1.create();
-        md.update(fileContent);
-        var fileContenthash = md.digest().toHex();
-        var keypair = {
-          publicKey: sessionStorage.pubkey,
-          privateKey: sessionStorage.privkey,
-        };
-
-        if (!keypair.privateKey && !keypair.publicKey) {
-          $("#navFailureMessage").html(
-            "Please upload/generate keys to upload file"
-          );
-          $("#navFailure").show();
-        } else {
-          keypair.publicKey = new Uint8Array(keypair.publicKey.split(","));
-          keypair.privateKey = new Uint8Array(keypair.privateKey.split(","));
-          var signature = ed25519.sign({
-            message: "test",
-            encoding: "utf8",
-            privateKey: keypair.privateKey,
-          });
-          console.log(fileContenthash);
-          $('input[name="fileContentHash"]').val(fileContenthash);
-          $('input[name="msg"]').val("test");
-          $('input[name="signature"]').val(signature.toString());
-          $('input[name="publicKey"]').val(keypair.publicKey.toString());
-          document.forms["fileUpload"].submit();
-        }
-      };
-      var file = document.getElementById("uploadFile").files[0];
-      reader.readAsBinaryString(file);
-    });
-  </script>
+  <script src="js/dist/mainpage.bundle.js"></script>
 </html>

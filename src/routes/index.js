@@ -110,11 +110,13 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
 });
 
 router.get('/list', (req, res) => {
-  res.render('list', { message: '' });
+  res.render('list');
 });
 
 router.get('/listFiles', isVerified, async (req, res, next) => {
   try {
+    console.log(req.user.filesUploaded);
+
     return res.json({
       map: req.user.filesUploaded || [],
       message: req.user.filesUploaded.length === 0 ? 'No files to show' : '',
@@ -161,7 +163,7 @@ router.post('/delete', isVerified, async (req, res, next) => {
       .toObject()
       .filter((o) => o.fileContentHash !== fileContentHash);
     await req.user.save();
-    return res.render('list', { message: 'Deleted file!' });
+    return res.render('list');
   } catch (error) {
     return next(error);
   }
