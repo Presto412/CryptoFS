@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const encrypt = require('mongoose-encryption');
+const envConfig = require('../config/env');
 
 const fileSchema = mongoose.Schema(
   {
@@ -12,8 +13,8 @@ const fileSchema = mongoose.Schema(
 );
 
 fileSchema.plugin(encrypt, {
-  encryptionKey: process.env.ENCRYPTION_KEY,
-  signingKey: process.env.SIGNING_KEY,
+  encryptionKey: envConfig.ENCRYPTION_KEY,
+  signingKey: envConfig.SIGNING_KEY,
   excludeFromEncryption: ['fileContentHash'],
 });
 

@@ -7,10 +7,11 @@ const logger = require('morgan');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
+const envConfig = require('./config/env');
 
 const app = express();
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(envConfig.MONGO_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const encrypt = require('mongoose-encryption');
+const envConfig = require('../config/env');
 
 const userSchema = mongoose.Schema(
   {
@@ -21,8 +22,8 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.plugin(encrypt, {
-  encryptionKey: process.env.ENCRYPTION_KEY,
-  signingKey: process.env.SIGNING_KEY,
+  encryptionKey: envConfig.ENCRYPTION_KEY,
+  signingKey: envConfig.SIGNING_KEY,
   excludeFromEncryption: ['publicKey'],
 });
 

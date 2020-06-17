@@ -2,17 +2,17 @@ const express = require('express');
 
 const router = express.Router();
 const multer = require('multer');
-
-const upload = multer({
-  dest: process.env.UPLOAD_PATH || '/tmp/uploads/',
-  limits: { fileSize: process.env.MAX_FILE_SIZE || 1024 * 1024 * 10 },
-}); // 10 mb
 const fs = require('fs');
 const crypto = require('crypto');
+const envConfig = require('../config/env');
 const User = require('../models/user');
 const File = require('../models/file');
 const isVerified = require('../middleware/verify').DSVerify;
 
+const upload = multer({
+  dest: envConfig.UPLOAD_PATH || '/tmp/uploads/',
+  limits: { fileSize: envConfig.MAX_FILE_SIZE || 1024 * 1024 * 10 },
+}); // 10 mb
 router.get('/', (req, res) => {
   res.render('index.ejs', {
     title: 'CryptoFS',
@@ -29,9 +29,9 @@ const createOrUpdateUser = async (publicKey, fileData) => {
       filesUploaded: [fileData],
     });
   } else {
-    if (user.filesUploaded.length === process.env.MAX_NUM_UPLOADS) {
+    if (user.filesUploaded.length === envConfig.MAX_NUM_UPLOADS) {
       throw new Error(
-        `Max upload limit reached. Can only upload a maximum of ${process.env.MAX_NUM_UPLOADS} files.`
+        `Max upload limit reached. Can only upload a maximum of ${envConfig.MAX_NUM_UPLOADS} files.`
       );
     }
     user.filesUploaded.push(fileData);
