@@ -115,8 +115,6 @@ router.get('/list', (req, res) => {
 
 router.get('/listFiles', isVerified, async (req, res, next) => {
   try {
-    console.log(req.user.filesUploaded);
-
     return res.json({
       map: req.user.filesUploaded || [],
       message: req.user.filesUploaded.length === 0 ? 'No files to show' : '',

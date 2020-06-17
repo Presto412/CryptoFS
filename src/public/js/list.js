@@ -32,7 +32,6 @@ $(document).ready(function () {
     },
     contentType: 'application/json;charset=utf-8',
     success(response) {
-      console.log(response);
       const table = document.getElementById('table1');
       response.map.forEach(function (element) {
         const tr = document.createElement('tr');
@@ -67,8 +66,6 @@ $(document).ready(function () {
       });
     },
     error(response) {
-      console.log(response);
-
       showFailureMessage(response.toString());
     },
   });
