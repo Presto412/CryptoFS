@@ -5,56 +5,63 @@
     <section>
       <%- include partials/nav %>
     </section>
-    <section class="section">
-      <p class="title is-1"><%= title %></p>
-      <p class="subtitle is-6">Upload any file</p>
-    </section>
-    <% if(success && message != "") { %>
-    <article class="message is-success">
-      <div class="message-body">
-        <p><%= message %></p>
+    <div class="columns is-centered is-vcentered is-mobile">
+      <div class="column is-narrow has-text-centered">
+        <section class="section">
+          <p class="title is-1"><%= title %></p>
+          <p class="subtitle is-6">Upload any file</p>
+        </section>
       </div>
-    </article>
-    <% } else if(message != ""){ %>
-    <article class="message is-danger">
-      <div class="message-body">
-        <p><%= message %></p>
-      </div>
-    </article>
-    <% } %>
-    <section class="section">
-      <form action="/upload" method="post" id="fileUpload" name="fileUpload" enctype="multipart/form-data">
-        <div class="field is-grouped">
-          <div class="control">
-            <div id="uploadFileDiv" class="file has-name">
-              <label class="file-label">
-                <input class="file-input" type="file" name="uploadFile" id="uploadFile" required />
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-upload"></i>
-                  </span>
-                  <span class="file-label">
-                    Choose a file…
-                  </span>
-                </span>
-                <span class="file-name">
-                  File not uploaded
-                </span>
-              </label>
+    </div>
+    <div class="columns is-centered is-vcentered is-mobile">
+      <div class="column is-narrow has-text-centered box">
+        <section class="section">
+          <form
+            action="/upload"
+            method="post"
+            id="fileUpload"
+            name="fileUpload"
+            enctype="multipart/form-data"
+          >
+            <div class="field">
+              <div class="control">
+                <div id="uploadFileDiv" class="file has-name is-boxed is-medium is-info">
+                  <label class="file-label">
+                    <input
+                      class="file-input"
+                      type="file"
+                      name="uploadFile"
+                      id="uploadFile"
+                      required
+                    />
+                    <span class="file-cta">
+                      <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                      </span>
+                      <span class="file-label">
+                        Choose a file…
+                      </span>
+                    </span>
+                    <span class="file-name">
+                      File not uploaded
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div class="control section">
+                <button id="submitFileBtn" class="button is-info is-rounded">
+                  Submit
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="control">
-            <button id="submitFileBtn" class="button is-info is-rounded">
-              Submit
-            </button>
-          </div>
-        </div>
-        <input type="text" name="fileContentHash" id="fileContentHash" hidden />
-        <input type="text" name="msg" id="msg" hidden />
-        <input type="text" name="signature" id="signature" hidden />
-        <input type="text" name="publicKey" id="publicKey" hidden />
-      </form>
-    </section>
+            <input type="text" name="fileContentHash" id="fileContentHash" hidden />
+            <input type="text" name="msg" id="msg" hidden />
+            <input type="text" name="signature" id="signature" hidden />
+            <input type="text" name="publicKey" id="publicKey" hidden />
+          </form>
+        </section>
+      </div>
+    </div>
   </body>
   <script src="js/dist/mainpage.bundle.js"></script>
 </html>

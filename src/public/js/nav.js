@@ -1,7 +1,13 @@
 import $ from 'jquery';
 import { logout } from './util';
-import { setKeyToStorage, generateKeyValuePair } from './keymanagement';
+import { setKeyToStorage, generateKeyValuePair, getKeysFromStorage } from './keymanagement';
 import { PUBKEY_STORAGE_KEY, PRIVKEY_STORAGE_KEY } from './defaults';
+
+const login = () => {
+  $('#keyManagementDiv').hide();
+  $('#login').hide();
+  $('#logout').show();
+};
 
 const showSuccessMessage = (message) => {
   $('#navSuccessMessage').html(message);
@@ -15,11 +21,28 @@ const showFailureMessage = (message) => {
 
 $('#navSuccess').hide();
 $('#navFailure').hide();
-if (sessionStorage.getItem('pubkey') && sessionStorage.getItem('privkey')) {
-  $('#keyManagementDiv').hide();
+$('#keyManagementDiv').hide();
+
+if (getKeysFromStorage()) {
+  $('#login').hide();
+  $('#logout').show();
+} else {
+  $('#logout').hide();
 }
-$('#logout').click(() => logout());
-$('#generateKeyValuePairButton').click(() => generateKeyValuePair());
+
+$('#logout').click(() => {
+  logout();
+  window.location.reload();
+});
+
+$('#login').click(() => {
+  $('#keyManagementDiv').show();
+});
+
+$('#generateKeyValuePairButton').click(() => {
+  generateKeyValuePair();
+  window.location.reload();
+});
 
 $(document).ready(() => {
   $('input[name=privateKeyUpload]').change(function (evt) {
@@ -31,7 +54,7 @@ $(document).ready(() => {
       } else {
         $('#UploadPrivKeyDiv').hide();
         if ($('#UploadPubKeyDiv').is(':hidden')) {
-          $('#keyManagementDiv').hide();
+          login();
         }
         showSuccessMessage.html('Successfully uploaded private key');
       }
@@ -47,7 +70,7 @@ $(document).ready(() => {
       } else {
         $('#UploadPubKeyDiv').hide();
         if ($('#UploadPrivKeyDiv').is(':hidden')) {
-          $('#keyManagementDiv').hide();
+          login();
         }
         showSuccessMessage('Successfully uploaded public key');
       }

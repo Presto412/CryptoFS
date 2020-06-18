@@ -1,24 +1,22 @@
 import $ from 'jquery';
 import { getSignedMessage, getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { DEFAULT_MESSAGE } from './defaults';
-import { showFailureMessage, showSuccessMessage } from './nav';
+import { showFailureMessage } from './nav';
 
 const downloadFile = (fileContentHash) => {
   updateHiddenFormContents('fileDownload', fileContentHash);
   document.forms.fileDownload.submit();
-  showSuccessMessage('Successfully downloaded file!');
 };
 
 const deleteFile = (fileContentHash) => {
   updateHiddenFormContents('fileDelete', fileContentHash);
   document.forms.fileDelete.submit();
-  showSuccessMessage('Successfully Deleted file!');
 };
 
 $(document).ready(function () {
   const keyPair = getKeysFromStorage();
   if (!keyPair) {
-    showFailureMessage('Please upload/generate keys to view list');
+    showFailureMessage('Please login to view list');
     return;
   }
   const signature = getSignedMessage();

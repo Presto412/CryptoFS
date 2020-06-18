@@ -3,7 +3,6 @@ import { PUBKEY_STORAGE_KEY, PRIVKEY_STORAGE_KEY } from './defaults';
 const logout = () => {
   sessionStorage.removeItem(PUBKEY_STORAGE_KEY);
   sessionStorage.removeItem(PRIVKEY_STORAGE_KEY);
-  window.location.href = '/';
 };
 
 const downloadURL = function (data, fileName) {

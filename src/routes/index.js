@@ -79,7 +79,7 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
 });
 
 router.get('/list', (req, res) => {
-  res.render('list');
+  res.render('list', { success: true, message: '' });
 });
 
 router.get('/listFiles', isVerified, async (req, res, next) => {
@@ -131,7 +131,7 @@ router.post('/delete', isVerified, async (req, res, next) => {
       .toObject()
       .filter((o) => o.fileContentHash !== fileContentHash);
     await req.user.save();
-    return res.render('list');
+    return res.render('list', { success: true, message: 'Successfully deleted file!' });
   } catch (error) {
     return next(error);
   }

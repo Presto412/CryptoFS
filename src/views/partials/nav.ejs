@@ -1,10 +1,24 @@
-<nav class="navbar hero is-black" role="navigation" aria-label="main navigation">
+<nav class="navbar is-black" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a id="home" class="navbar-item" href="/">Home</a>
     <a class="navbar-item" href="/list">Files</a>
+    <a id="login" class="navbar-item">Login</a>
     <a id="logout" class="navbar-item">Logout</a>
   </div>
 </nav>
+<% if(success && message != "") { %>
+<article class="message is-success">
+  <div class="message-body">
+    <p><%= message %></p>
+  </div>
+</article>
+<% } else if(message != ""){ %>
+<article class="message is-danger">
+  <div class="message-body">
+    <p><%= message %></p>
+  </div>
+</article>
+<% } %>
 <div id="navMessage">
   <article class="message is-success" id="navSuccess">
     <div class="message-body">
@@ -17,87 +31,91 @@
     </div>
   </article>
 </div>
-<div id="keyManagementDiv">
-  <br />
-  <div class="columns">
-    <div class="column is-one-fifth">
+<div id="keyManagementDiv" class="hero is-dark">
+  <div class="columns is-centered is-mobile">
+    <div class="column is-narrow">
       <section class="section">
-        <button class="button is-dark is-rounded" id="generateKeyValuePairButton">
-          Generate key-value pair
+        <button
+          class="button is-black is-rounded is-large is-fullwidth"
+          id="generateKeyValuePairButton"
+        >
+          Generate Security Keys
         </button>
       </section>
     </div>
-    <div class="column is-one-fifth">
+    <div class="column is-narrow">
       <section class="section">
         <p class="title is-2">Or</p>
       </section>
     </div>
-    <section class="section">
-      <div id="UploadDiv" class="column tile is-one-fifth">
-        <div id="UploadPubKeyDiv">
-          <div class="field">
-            <div class="control">
-              <label class="label">Upload public key</label>
+    <div class="column is-narrow">
+      <section class="section">
+        <div id="UploadDiv" class="columns is-narrow">
+          <div id="UploadPubKeyDiv" class="column">
+            <div class="field">
+              <div class="control">
+                <label class="label has-text-white">Upload public key</label>
+              </div>
+              <div class="control">
+                <div id="publicKeyUploadDiv" class="file has-name is-boxed is-black">
+                  <label class="file-label">
+                    <input
+                      class="file-input"
+                      type="file"
+                      name="publicKeyUpload"
+                      id="publicKeyUpload"
+                      required
+                    />
+                    <span class="file-cta">
+                      <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                      </span>
+                      <span class="file-label">
+                        Choose a file…
+                      </span>
+                    </span>
+                    <span class="file-name">
+                      File not uploaded
+                    </span>
+                  </label>
+                </div>
+              </div>
             </div>
-            <div class="control">
-              <div id="publicKeyUploadDiv" class="file has-name">
-                <label class="file-label">
-                  <input
-                    class="file-input"
-                    type="file"
-                    name="publicKeyUpload"
-                    id="publicKeyUpload"
-                    required
-                  />
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
+          </div>
+          <div id="UploadPrivKeyDiv" class="column">
+            <div class="field">
+              <div class="control">
+                <label class="label has-text-white">Upload private key</label>
+              </div>
+              <div class="control">
+                <div id="privateKeyUploadDiv" class="file has-name is-boxed is-black">
+                  <label class="file-label is-black">
+                    <input
+                      class="file-input"
+                      type="file"
+                      name="privateKeyUpload"
+                      id="privateKeyUpload"
+                      required
+                    />
+                    <span class="file-cta">
+                      <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                      </span>
+                      <span class="file-label">
+                        Choose a file…
+                      </span>
                     </span>
-                    <span class="file-label">
-                      Choose a file…
+                    <span class="file-name">
+                      File not uploaded
                     </span>
-                  </span>
-                  <span class="file-name">
-                    File not uploaded
-                  </span>
-                </label>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div id="UploadPrivKeyDiv">
-          <div class="field">
-            <div class="control">
-              <label class="label">Upload private key</label>
-            </div>
-            <div class="control">
-              <div id="privateKeyUploadDiv" class="file has-name">
-                <label class="file-label">
-                  <input
-                    class="file-input"
-                    type="file"
-                    name="privateKeyUpload"
-                    id="privateKeyUpload"
-                    required
-                  />
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                      Choose a file…
-                    </span>
-                  </span>
-                  <span class="file-name">
-                    File not uploaded
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </div>
 <script src="js/dist/nav.bundle.js"></script>

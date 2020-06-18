@@ -14,7 +14,7 @@ $(document).ready(() => {
       const fileContentHash = md.digest().toHex();
       const keypair = getKeysFromStorage();
       if (!keypair) {
-        showFailureMessage('Please upload/generate keys to upload file');
+        showFailureMessage('Please login to upload file');
         return;
       }
       updateHiddenFormContents('fileUpload', fileContentHash);

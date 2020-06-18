@@ -26,7 +26,6 @@ const generateKeyValuePair = () => {
   downloadBlob(keypair.privateKey, 'cryptoFs.priv.key', 'application/octet-stream');
   setKeyToStorage(PUBKEY_STORAGE_KEY, keypair.publicKey);
   setKeyToStorage(PRIVKEY_STORAGE_KEY, keypair.privateKey);
-  $('#keyManagementDiv').hide();
   return keypair;
 };
 
