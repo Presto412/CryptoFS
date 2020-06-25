@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import forge from 'node-forge';
+import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { showFailureMessage } from './showAlertMessage';
 

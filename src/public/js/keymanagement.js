@@ -1,4 +1,4 @@
-import forge from 'node-forge';
+import forge from 'forge';
 import $ from 'jquery';
 import {
   DEFAULT_MESSAGE,

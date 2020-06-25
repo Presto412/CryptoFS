@@ -24,4 +24,8 @@ module.exports = {
   devServer: {
     contentBase: './dist',
   },
+  externals: {
+    jquery: 'jQuery',
+    forge: 'forge',
+  },
 };
