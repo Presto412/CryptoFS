@@ -2,21 +2,12 @@ import $ from 'jquery';
 import { logout } from './util';
 import { setKeyToStorage, generateKeyValuePair, getKeysFromStorage } from './keymanagement';
 import { PUBKEY_STORAGE_KEY, PRIVKEY_STORAGE_KEY } from './defaults';
+import { showFailureMessage, showSuccessMessage } from './showAlertMessage';
 
 const login = () => {
   $('#keyManagementDiv').hide();
   $('#login').hide();
   $('#logout').show();
-};
-
-const showSuccessMessage = (message) => {
-  $('#navSuccessMessage').html(message);
-  $('#navSuccess').show();
-};
-
-const showFailureMessage = (message) => {
-  $('#navFailureMessage').html(message);
-  $('#navFailure').show();
 };
 
 $('#navSuccess').hide();
@@ -41,7 +32,6 @@ $('#login').click(() => {
 
 $('#generateKeyValuePairButton').click(() => {
   generateKeyValuePair();
-  window.location.reload();
 });
 
 $(document).ready(() => {
