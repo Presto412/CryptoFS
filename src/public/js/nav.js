@@ -32,6 +32,7 @@ $('#login').click(() => {
 
 $('#generateKeyValuePairButton').click(() => {
   generateKeyValuePair();
+  window.location.reload();
 });
 
 $(document).ready(() => {
