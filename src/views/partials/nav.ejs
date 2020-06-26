@@ -20,19 +20,19 @@
 </article>
 <% } %>
 <div id="navMessage">
-  <article class="message is-success" id="navSuccess">
+  <article class="message is-success initial-hidden" id="navSuccess">
     <div class="message-body">
       <p id="navSuccessMessage"></p>
     </div>
   </article>
-  <article class="message is-danger" id="navFailure">
+  <article class="message is-danger initial-hidden" id="navFailure">
     <div class="message-body">
       <p id="navFailureMessage"></p>
     </div>
   </article>
 </div>
-<div id="keyManagementDiv" class="hero is-dark">
-  <div class="columns is-centered is-multiline has-text-centered">
+<div id="keyManagementDiv" class="hero is-dark initial-hidden">
+  <div class="columns is-centered is-multiline has-text-centered is-gapless">
     <div class="column is-narrow">
       <section class="section">
         <button class="button is-black is-rounded is-large" id="generateKeyValuePairButton">
@@ -51,7 +51,7 @@
           <label class="label has-text-white">Upload security key</label>
           <div class="control">
             <div id="KeyUploadDiv" class="file is-boxed is-black">
-              <label class="file-label">
+              <label class="file-label" style="margin: auto;">
                 <input class="file-input" type="file" name="keyUpload" id="keyUpload" required />
                 <span class="file-cta">
                   <span class="file-icon">
