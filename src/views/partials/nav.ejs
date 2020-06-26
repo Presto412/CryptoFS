@@ -32,13 +32,10 @@
   </article>
 </div>
 <div id="keyManagementDiv" class="hero is-dark">
-  <div class="columns is-centered is-mobile">
+  <div class="columns is-centered is-multiline has-text-centered">
     <div class="column is-narrow">
       <section class="section">
-        <button
-          class="button is-black is-rounded is-large is-fullwidth"
-          id="generateKeyValuePairButton"
-        >
+        <button class="button is-black is-rounded is-large" id="generateKeyValuePairButton">
           Generate Security Keys
         </button>
       </section>
@@ -50,67 +47,21 @@
     </div>
     <div class="column is-narrow">
       <section class="section">
-        <div id="UploadDiv" class="columns is-narrow">
-          <div id="UploadPubKeyDiv" class="column">
-            <div class="field">
-              <div class="control">
-                <label class="label has-text-white">Upload public key</label>
-              </div>
-              <div class="control">
-                <div id="publicKeyUploadDiv" class="file has-name is-boxed is-black">
-                  <label class="file-label">
-                    <input
-                      class="file-input"
-                      type="file"
-                      name="publicKeyUpload"
-                      id="publicKeyUpload"
-                      required
-                    />
-                    <span class="file-cta">
-                      <span class="file-icon">
-                        <i class="fas fa-upload"></i>
-                      </span>
-                      <span class="file-label">
-                        Choose a file…
-                      </span>
-                    </span>
-                    <span class="file-name">
-                      File not uploaded
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="UploadPrivKeyDiv" class="column">
-            <div class="field">
-              <div class="control">
-                <label class="label has-text-white">Upload private key</label>
-              </div>
-              <div class="control">
-                <div id="privateKeyUploadDiv" class="file has-name is-boxed is-black">
-                  <label class="file-label is-black">
-                    <input
-                      class="file-input"
-                      type="file"
-                      name="privateKeyUpload"
-                      id="privateKeyUpload"
-                      required
-                    />
-                    <span class="file-cta">
-                      <span class="file-icon">
-                        <i class="fas fa-upload"></i>
-                      </span>
-                      <span class="file-label">
-                        Choose a file…
-                      </span>
-                    </span>
-                    <span class="file-name">
-                      File not uploaded
-                    </span>
-                  </label>
-                </div>
-              </div>
+        <div class="field">
+          <label class="label has-text-white">Upload security key</label>
+          <div class="control">
+            <div id="KeyUploadDiv" class="file is-boxed is-black">
+              <label class="file-label">
+                <input class="file-input" type="file" name="keyUpload" id="keyUpload" required />
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Choose a file…
+                  </span>
+                </span>
+              </label>
             </div>
           </div>
         </div>

@@ -15,18 +15,32 @@ const setKeyToStorage = (type, value) => {
   if (value.length !== 64 && !(value instanceof Uint8Array)) {
     return false;
   }
-
   sessionStorage.setItem(type, new Uint8Array(value).toString());
   return true;
 };
 
+const serializeKeyPair = (keypair) => {
+  const jsonKeyPair = {
+    publicKey: keypair.publicKey.toString(),
+    privateKey: keypair.privateKey.toString(),
+  };
+  return JSON.stringify(jsonKeyPair);
+};
+
 const generateKeyValuePair = () => {
   const keypair = forge.pki.ed25519.generateKeyPair();
-  downloadBlob(keypair.publicKey, 'cryptoFs.pub.key', 'application/octet-stream');
-  downloadBlob(keypair.privateKey, 'cryptoFs.priv.key', 'application/octet-stream');
+  const jsonKeyPair = serializeKeyPair(keypair);
+  downloadBlob(jsonKeyPair, 'cryptoFs-keypair.json', 'application/json');
   setKeyToStorage(PUBKEY_STORAGE_KEY, keypair.publicKey);
   setKeyToStorage(PRIVKEY_STORAGE_KEY, keypair.privateKey);
   return keypair;
+};
+
+const deserializeKeyPair = (keypair) => {
+  const keyPairAsObject = JSON.parse(keypair);
+  keyPairAsObject.publicKey = new Uint8Array(keyPairAsObject.publicKey.split(','));
+  keyPairAsObject.privateKey = new Uint8Array(keyPairAsObject.privateKey.split(','));
+  return keyPairAsObject;
 };
 
 const getKeysFromStorage = () => {
@@ -75,4 +89,6 @@ export {
   setKeyToStorage,
   generateKeyValuePair,
   updateHiddenFormContents,
+  serializeKeyPair,
+  deserializeKeyPair,
 };
