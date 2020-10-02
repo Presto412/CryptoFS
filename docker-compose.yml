@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  app:
+    container_name: cryptofs-node
+    command: npm start
+    restart: always
+    build: .
+    volumes:
+      - ./:/usr/src/app/
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    networks:
+      - app-tier
+  mongo:
+    container_name: mongo-cryptofs
+    image: bitnami/mongodb:4.2.7
+    environment:
+      - ALLOW_EMPTY_PASSWORD=no
+      - MONGODB_ROOT_PASSWORD=password
+    ports:
+      - 27017:27017
+    networks:
+      - app-tier
+networks:
+  app-tier:
+    driver: bridge
