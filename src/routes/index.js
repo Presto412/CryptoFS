@@ -24,7 +24,13 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
     const { publicKey, filesUploaded } = req.user;
     const { fileContentHash } = req.body;
     const { originalname, mimetype, size, path } = req.file;
-
+    const render = (model) => {
+      if (req.accepts('json')) {
+        return res.json(model);
+      }
+      return res.render('index.ejs', model);
+    };
+    
     const fileData = {
       fileContentHash,
       metaData: {
@@ -42,14 +48,14 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
         (obj) => obj.fileContentHash === fileAlreadyPresent.fileContentHash
       );
       if (userFileHashes.length !== 0) {
-        return res.render('index.ejs', {
+        return render({
           title: 'CryptoFS',
           success: false,
           message: 'File already exists',
         });
       }
       await userService.createOrUpdateUserFileData(publicKey, fileData);
-      return res.render('index.ejs', {
+      return render({
         title: 'CryptoFS',
         success: true,
         message: 'File successfully linked',
@@ -58,7 +64,7 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
 
     const generatedFileContentHash = await fileUtil.getFileHash(path);
     if (fileContentHash !== generatedFileContentHash) {
-      return res.render('index.ejs', {
+      return render({
         title: 'CryptoFS',
         success: false,
         message: "File hash doesn't match sent hash",
@@ -68,7 +74,7 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
     await userService.createOrUpdateUserFileData(publicKey, fileData);
     await fileService.createFile(fileContentHash, path);
 
-    return res.render('index.ejs', {
+    return render({
       title: 'CryptoFS',
       success: true,
       message: 'Successfully uploaded file!',
