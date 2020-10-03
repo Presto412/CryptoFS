@@ -49,11 +49,17 @@
                 </div>
               </div>
               <div class="control section">
-                <button id="submitFileBtn" class="button is-info is-rounded">
+                <button class="button is-info is-rounded">
                   Submit
                 </button>
               </div>
             </div>
+            <% if (recaptchaEnabled) { %>
+              <div id='recaptcha' class="g-recaptcha"
+                data-sitekey="<%= recaptchaSiteKey %>"
+                data-callback="submitForm"
+                data-size="invisible"></div>
+            <% } %>
             <input type="text" name="fileContentHash" id="fileContentHash" hidden />
             <input type="text" name="msg" id="msg" hidden />
             <input type="text" name="signature" id="signature" hidden />
