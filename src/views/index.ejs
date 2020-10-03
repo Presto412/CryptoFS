@@ -49,15 +49,16 @@
                 </div>
               </div>
               <div class="control section">
-                <button class="button is-info is-rounded<% if (recaptchaEnabled) { %> g-recaptcha"<% } %><% if (recaptchaEnabled) { %>
-                    data-sitekey="<%= recaptchaSiteKey %>"
-                    data-callback="recaptchaValidate<% } %>">
+                <button class="button is-info is-rounded">
                   Submit
                 </button>
               </div>
             </div>
             <% if (recaptchaEnabled) { %>
-              <input type="text" name="recaptchaToken" id="recaptchaToken" hidden />
+              <div id='recaptcha' class="g-recaptcha"
+                data-sitekey="<%= recaptchaSiteKey %>"
+                data-callback="submitForm"
+                data-size="invisible"></div>
             <% } %>
             <input type="text" name="fileContentHash" id="fileContentHash" hidden />
             <input type="text" name="msg" id="msg" hidden />
@@ -69,13 +70,4 @@
     </div>
   </body>
   <script src="js/dist/mainpage.bundle.js"></script>
-  <% if (recaptchaEnabled) { %>
-    <script>
-      function recaptchaValidate(token) {
-        const recaptchaTokenInput = document.getElementById('recaptchaToken');
-        recaptchaTokenInput.value = token;
-        recaptchaTokenInput.dispatchEvent(new Event('change'));
-      }
-    </script>
-  <% } %>
 </html>

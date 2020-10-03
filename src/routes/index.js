@@ -47,7 +47,7 @@ router.get('/', (req, res) => {
 router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res, next) => {
   try {
     const { publicKey, filesUploaded } = req.user;
-    const { fileContentHash, recaptchaToken } = req.body;
+    const { fileContentHash, ['g-recaptcha-response']:recaptchaToken } = req.body;
     const { originalname, mimetype, size, path } = req.file;
     const recaptchaEnabled = envConfig.RECAPTCHA_ENABLED;
     const recaptchaSiteKey = envConfig.RECAPTCHA_SITE_KEY;
