@@ -3,10 +3,10 @@ import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { showFailureMessage } from './showAlertMessage';
 
-$('#submitFileBtn').click((e) => {
+const doFileUpload = (e) => {
   e.preventDefault();
   const reader = new FileReader();
-  reader.onload = function () {
+  reader.onload = () => {
     const fileContent = reader.result;
     const md = forge.md.sha1.create();
     md.update(fileContent);
@@ -21,11 +21,14 @@ $('#submitFileBtn').click((e) => {
   };
   const file = $('#uploadFile').prop('files')[0];
   reader.readAsBinaryString(file);
-});
+  return false;
+};
 
-$(document).ready(() => {
+$(() => {
+  $('#fileUpload').on('submit', doFileUpload);
+  $('#recaptchaToken').on('change', doFileUpload);
   const fileInput = $('#uploadFileDiv input[type=file]');
-  fileInput.change(() => {
+  fileInput.on('change', () => {
     if (fileInput.prop('files').length > 0) {
       $('#uploadFileDiv .file-name').text(fileInput.prop('files')[0].name);
     }
