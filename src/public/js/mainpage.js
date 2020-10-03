@@ -5,21 +5,43 @@ import { showFailureMessage } from './showAlertMessage';
 
 $('#submitFileBtn').click((e) => {
   e.preventDefault();
+  const file = $('#uploadFile').prop('files')[0];
   const reader = new FileReader();
   reader.onload = function () {
-    const fileContent = reader.result;
-    const md = forge.md.sha1.create();
-    md.update(fileContent);
-    const fileContentHash = md.digest().toHex();
+    let fileContent = reader.result;
+
     const keypair = getKeysFromStorage();
     if (!keypair) {
       showFailureMessage('Please login to upload file');
       return;
     }
+
+    const key = forge.util.createBuffer(keypair.privateKey.slice(0,16));
+    const iv = forge.util.createBuffer(keypair.privateKey.slice(16,33));
+    const cipher = forge.cipher.createCipher('AES-CBC', key);
+    cipher.start({iv});
+    cipher.update(forge.util.createBuffer(fileContent));
+    cipher.finish();
+
+    fileContent = cipher.output.getBytes();
+
+    const md = forge.md.sha1.create();
+    md.update(fileContent);
+    const fileContentHash = md.digest().toHex();
     updateHiddenFormContents('fileUpload', fileContentHash);
-    document.forms.fileUpload.submit();
+    const fileUpload = document.getElementById('fileUpload');
+    const formData = new FormData(fileUpload);
+    formData.delete('uploadFile');
+    
+    formData.append('uploadFile', new Blob([fileContent]), file.name);
+    fetch(fileUpload.getAttribute('action'), {
+      method: fileUpload.getAttribute('method'),
+      headers: {
+        Accept: 'application/json',
+      },
+      body: formData,
+    }).then((res) => console.log(res));
   };
-  const file = $('#uploadFile').prop('files')[0];
   reader.readAsBinaryString(file);
 });
 
