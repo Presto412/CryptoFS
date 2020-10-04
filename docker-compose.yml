@@ -15,14 +15,15 @@ services:
       - app-tier
   mongo:
     container_name: mongo-cryptofs
-    image: bitnami/mongodb:4.2.7
-    environment:
-      - ALLOW_EMPTY_PASSWORD=no
-      - MONGODB_ROOT_PASSWORD=password
+    image: 'mongo'
     ports:
       - 27017:27017
+    volumes:
+      - mongo_data:/data/db
     networks:
       - app-tier
+volumes:
+  mongo_data:
 networks:
   app-tier:
     driver: bridge
