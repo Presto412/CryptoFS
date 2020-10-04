@@ -62,14 +62,14 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
       });
     }
 
-    const generatedFileContentHash = await fileUtil.getFileHash(path);
-    if (fileContentHash !== generatedFileContentHash) {
-      return render({
-        title: 'CryptoFS',
-        success: false,
-        message: "File hash doesn't match sent hash",
-      });
-    }
+    // const generatedFileContentHash = await fileUtil.getFileHash(path);
+    // if (fileContentHash !== generatedFileContentHash) {
+    //   return render({
+    //     title: 'CryptoFS',
+    //     success: false,
+    //     message: "File hash doesn't match sent hash",
+    //   });
+    // }
 
     await userService.createOrUpdateUserFileData(publicKey, fileData);
     await fileService.createFile(fileContentHash, path);
