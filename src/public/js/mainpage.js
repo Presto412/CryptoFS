@@ -3,10 +3,12 @@ import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { showFailureMessage } from './showAlertMessage';
 
-$('#submitFileBtn').click((e) => {
+const submitForm = () => document.forms.fileUpload.submit();
+const doFileUpload = (e) => {
   e.preventDefault();
   const reader = new FileReader();
-  reader.onload = function () {
+  const recaptchaEnabled = $('#recaptcha').length;
+  reader.onload = () => {
     const fileContent = reader.result;
     const md = forge.md.sha1.create();
     md.update(fileContent);
@@ -17,15 +19,22 @@ $('#submitFileBtn').click((e) => {
       return;
     }
     updateHiddenFormContents('fileUpload', fileContentHash);
-    document.forms.fileUpload.submit();
+    if (recaptchaEnabled) {
+      grecaptcha.execute();
+    } else {
+      submitForm();
+    }
   };
   const file = $('#uploadFile').prop('files')[0];
   reader.readAsBinaryString(file);
-});
+  return false;
+};
 
-$(document).ready(() => {
+$(() => {
+  $('#fileUpload').on('submit', doFileUpload);
+  window.submitForm = submitForm;
   const fileInput = $('#uploadFileDiv input[type=file]');
-  fileInput.change(() => {
+  fileInput.on('change', () => {
     if (fileInput.prop('files').length > 0) {
       $('#uploadFileDiv .file-name').text(fileInput.prop('files')[0].name);
     }

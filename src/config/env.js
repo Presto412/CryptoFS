@@ -5,4 +5,7 @@ module.exports = {
   MONGO_URI: process.env.MONGO_URI,
   ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
   SIGNING_KEY: process.env.SIGNING_KEY,
+  RECAPTCHA_ENABLED: !!(process.env.RECAPTCHA_SITE_KEY && process.env.RECAPTCHA_SECRET_KEY),
+  RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
+  RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
 };
