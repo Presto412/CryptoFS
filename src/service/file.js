@@ -1,5 +1,6 @@
 const File = require('../models/file');
-
+const { upload } = require('./aws');
+const path = require('path');
 const findFileByContentHash = async (fileContentHash) => {
   try {
     const file = await File.findOne({ fileContentHash });
@@ -9,11 +10,12 @@ const findFileByContentHash = async (fileContentHash) => {
   }
 };
 
-const createFile = async (fileContentHash, path) => {
+const createFile = async (fileContentHash, path, originalname) => {
   try {
+    const aws = await upload({ fileContentHash, path, originalname });
     const file = new File({
       fileContentHash,
-      paths: [path],
+      paths: aws,
     });
     await file.save();
     return file;
