@@ -12,7 +12,7 @@ const userService = require('../service/user');
 const fileService = require('../service/file');
 const fileUtil = require('../util/file');
 const { getData } = require('../service/aws');
-
+const {S3_BUCKET_ENABLED} = require('../config/env')
 const upload = multer(multerConfig);
 
 const recaptchaValidate = (secretKey, token) =>
@@ -174,7 +174,8 @@ router.post('/download', isVerified, async (req, res, next) => {
         recaptchaEnabled: false,
       });
     }
-    const { filePath, Body } = await getData({ fileKey: file.paths[0], res });
+    if(S3_BUCKET_ENABLED){
+      const { filePath, Body } = await getData({ fileKey: file.paths[0], res });
     fs.writeFileSync(filePath, Body);
     res.download(filePath, function (err) {
       if (err) {
@@ -188,6 +189,10 @@ router.post('/download', isVerified, async (req, res, next) => {
         });
       }
     });
+    }else {
+    return res.download(file.paths[0], userFileHashes[0].metaData.filename);
+    }
+    
   } catch (error) {
     return next(error);
   }
