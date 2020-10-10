@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { showFailureMessage } from './showAlertMessage';
@@ -7,7 +6,7 @@ const submitForm = () => document.forms.fileUpload.submit();
 const doFileUpload = (e) => {
   e.preventDefault();
   const reader = new FileReader();
-  const recaptchaEnabled = $('#recaptcha').length;
+  const recaptchaEnabled = document.querySelectorAll('#recaptcha').length;
   reader.onload = () => {
     const fileContent = reader.result;
     const md = forge.md.sha1.create();
@@ -25,18 +24,19 @@ const doFileUpload = (e) => {
       submitForm();
     }
   };
-  const file = $('#uploadFile').prop('files')[0];
+  const file = document.querySelector('#uploadFile').files[0];
   reader.readAsBinaryString(file);
   return false;
 };
 
-$(() => {
-  $('#fileUpload').on('submit', doFileUpload);
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('#fileUpload').addEventListener('submit', doFileUpload);
   window.submitForm = submitForm;
-  const fileInput = $('#uploadFileDiv input[type=file]');
-  fileInput.on('change', () => {
-    if (fileInput.prop('files').length > 0) {
-      $('#uploadFileDiv .file-name').text(fileInput.prop('files')[0].name);
+
+  const fileInput = document.querySelector('#uploadFileDiv input[type=file]');
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      document.querySelector('#uploadFileDiv .file-name').textContent = fileInput.files[0].name;
     }
   });
 });
