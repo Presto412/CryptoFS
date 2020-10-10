@@ -1,5 +1,6 @@
 const File = require('../models/file');
 const { upload } = require('./aws');
+const { S3_BUCKET_ENABLED }= require('../config/env')
 const path = require('path');
 const findFileByContentHash = async (fileContentHash) => {
   try {
@@ -12,7 +13,12 @@ const findFileByContentHash = async (fileContentHash) => {
 
 const createFile = async (fileContentHash, path, originalname) => {
   try {
-    const aws = await upload({ fileContentHash, path, originalname });
+    let aws;
+    if (S3_BUCKET_ENABLED){
+    aws = await upload({ fileContentHash, path, originalname });
+    }else {
+      aws = [path]
+    }
     const file = new File({
       fileContentHash,
       paths: aws,
