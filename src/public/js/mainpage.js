@@ -1,11 +1,15 @@
 import $ from 'jquery';
 import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
-import { showFailureMessage } from './showAlertMessage';
+import { showSuccessMessage, showFailureMessage } from './showAlertMessage';
 
 $('#submitFileBtn').click((e) => {
   e.preventDefault();
   const file = $('#uploadFile').prop('files')[0];
+  if (!file) {
+    showFailureMessage('File not selected');
+    return;
+  }
   const reader = new FileReader();
   reader.onload = function () {
     let fileContent = reader.result;
@@ -40,7 +44,13 @@ $('#submitFileBtn').click((e) => {
         Accept: 'application/json',
       },
       body: formData,
-    }).then((res) => console.log(res));
+    }).then((res) => res.json().then(body => {
+      if (body.success) {
+        showSuccessMessage(body.message)
+        $('#uploadFile').val('');
+        $('#uploadFileDiv .file-name').text('File uploaded');
+      } else showFailureMessage(body.message)
+    })).catch(err => showFailureMessage(err));
   };
   reader.readAsBinaryString(file);
 });
