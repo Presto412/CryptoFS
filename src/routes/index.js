@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 const express = require('express');
 
 const router = express.Router();
@@ -12,7 +13,8 @@ const userService = require('../service/user');
 const fileService = require('../service/file');
 const fileUtil = require('../util/file');
 const { getData } = require('../service/aws');
-const {S3_BUCKET_ENABLED} = require('../config/env')
+const { S3_BUCKET_ENABLED } = require('../config/env');
+
 const upload = multer(multerConfig);
 
 const recaptchaValidate = (secretKey, token) =>
@@ -25,6 +27,7 @@ const recaptchaValidate = (secretKey, token) =>
         method: 'POST',
       },
       (response) => {
+        // eslint-disable-next-line no-return-assign
         response.on('data', (d) => (body += d));
         response.on('end', () => {
           const parsedBody = JSON.parse(body);
@@ -173,26 +176,27 @@ router.post('/download', isVerified, async (req, res, next) => {
         message: 'File not found',
         recaptchaEnabled: false,
       });
+
     }
-    if(S3_BUCKET_ENABLED){
+    if (S3_BUCKET_ENABLED) {
+
       const { filePath, Body } = await getData({ fileKey: file.paths[0], res });
-    fs.writeFileSync(filePath, Body);
-    res.download(filePath, function (err) {
-      if (err) {
-      } else {
-        // decrement a download credit, etc. // here remove temp file
-        fs.unlink(filePath, function (err) {
-          if (err) {
-            console.error(err);
-          }
-          console.log('Temp File Delete');
-        });
-      }
-    });
-    }else {
-    return res.download(file.paths[0], userFileHashes[0].metaData.filename);
+      fs.writeFileSync(filePath, Body);
+      res.download(filePath, function (err) {
+        if (err) {
+        } else {
+          // decrement a download credit, etc. // here remove temp file
+          fs.unlink(filePath, function (error) {
+            if (error) {
+              console.error(error);
+            }
+            console.log('Temp File Delete');
+          });
+        }
+      });
+    } else {
+      return res.download(file.paths[0], userFileHashes[0].metaData.filename);
     }
-    
   } catch (error) {
     return next(error);
   }
