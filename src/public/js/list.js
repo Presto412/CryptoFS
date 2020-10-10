@@ -3,7 +3,7 @@ import { getSignedMessage, getKeysFromStorage, updateHiddenFormContents } from '
 import { DEFAULT_MESSAGE } from './defaults';
 import { showFailureMessage } from './nav';
 
-const downloadFile = (fileContentHash) => {
+const downloadFile = (fileContentHash, filename) => {
   const keyPair = getKeysFromStorage();
   if (!keyPair) {
     showFailureMessage('Please login to upload file');
@@ -23,6 +23,7 @@ const downloadFile = (fileContentHash) => {
     publicKey: publicKey.toString(),
     fileContentHash,
   });
+
   fetch(fileDownload.getAttribute('action'), {
     method: fileDownload.getAttribute('method'),
     body: formData,
@@ -34,8 +35,10 @@ const downloadFile = (fileContentHash) => {
     cipher.start({iv});
     cipher.update(forge.util.createBuffer(blob));
     cipher.finish();
+    const fileContent = Buffer.from(cipher.output.getBytes(), 'binary');
     const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(new Blob([cipher.output.getBytes()]));
+    link.href = window.URL.createObjectURL(new Blob([fileContent], {type: 'application/octet-stream'}));
+    link.download = filename;
     link.click();
   });
 };
@@ -75,7 +78,7 @@ $(document).ready(function () {
         const td4 = document.createElement('td');
         const downloadButton = document.createElement('button');
         $(downloadButton).click(() => {
-          downloadFile(element.fileContentHash);
+          downloadFile(element.fileContentHash, element.metaData.filename);
         });
         downloadButton.setAttribute('class', 'button is-info listDownloadButton');
         downloadButton.innerHTML = 'Download';
