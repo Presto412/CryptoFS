@@ -3,15 +3,14 @@ import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { showSuccessMessage, showFailureMessage } from './showAlertMessage';
 
-$('#submitFileBtn').click((e) => {
-  e.preventDefault();
+const submitForm = () => {
   const file = $('#uploadFile').prop('files')[0];
   if (!file) {
     showFailureMessage('File not selected');
     return;
   }
   const reader = new FileReader();
-  reader.onload = function () {
+  reader.onload = () => {
     let fileContent = reader.result;
 
     const keypair = getKeysFromStorage();
@@ -57,11 +56,24 @@ $('#submitFileBtn').click((e) => {
     .catch(err => showFailureMessage(err));
   };
   reader.readAsBinaryString(file);
-});
+}
 
-$(document).ready(() => {
+const doFileUpload = (e) => {
+  e.preventDefault();
+  const recaptchaEnabled = $('#recaptcha').length;
+  if (recaptchaEnabled) {
+    grecaptcha.execute();
+  } else {
+    submitForm();
+  }
+  return false;
+};
+
+$(() => {
+  $('#fileUpload').on('submit', doFileUpload);
+  window.submitForm = submitForm;
   const fileInput = $('#uploadFileDiv input[type=file]');
-  fileInput.change(() => {
+  fileInput.on('change', () => {
     if (fileInput.prop('files').length > 0) {
       $('#uploadFileDiv .file-name').text(fileInput.prop('files')[0].name);
     }

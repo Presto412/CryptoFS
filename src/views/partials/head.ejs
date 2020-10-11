@@ -16,5 +16,8 @@
   crossorigin="anonymous"
   ></script>
   <script src="https://cdn.jsdelivr.net/npm/node-forge@0.9.1/dist/forge.min.js"></script>
+  <% if(recaptchaEnabled) { %>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <% } %>
   <link rel="stylesheet" href="stylesheets/style.css" />
 </head>
