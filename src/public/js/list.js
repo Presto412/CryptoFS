@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { getSignedMessage, getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { DEFAULT_MESSAGE } from './defaults';
 import { showFailureMessage } from './nav';
+import { downloadBlob } from './util';
 
 const downloadFile = (fileContentHash, filename) => {
   const keyPair = getKeysFromStorage();
@@ -36,10 +37,7 @@ const downloadFile = (fileContentHash, filename) => {
     cipher.update(forge.util.createBuffer(blob));
     cipher.finish();
     const fileContent = Buffer.from(cipher.output.getBytes(), 'binary');
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(new Blob([fileContent], {type: 'application/octet-stream'}));
-    link.download = filename;
-    link.click();
+    downloadBlob(fileContent, filename, 'application/octet-stream');
   });
 };
 
