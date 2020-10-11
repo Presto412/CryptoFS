@@ -28,9 +28,9 @@ $('#submitFileBtn').click((e) => {
     cipher.finish();
 
     fileContent = cipher.output.getBytes();
-
+    
     const md = forge.md.sha1.create();
-    md.update(fileContent);
+    md.update(forge.util.encodeUtf8(fileContent));
     const fileContentHash = md.digest().toHex();
     updateHiddenFormContents('fileUpload', fileContentHash);
     const fileUpload = document.getElementById('fileUpload');
@@ -44,13 +44,17 @@ $('#submitFileBtn').click((e) => {
         Accept: 'application/json',
       },
       body: formData,
-    }).then((res) => res.json().then(body => {
-      if (body.success) {
-        showSuccessMessage(body.message)
-        $('#uploadFile').val('');
-        $('#uploadFileDiv .file-name').text('File uploaded');
-      } else showFailureMessage(body.message)
-    })).catch(err => showFailureMessage(err));
+    }).then((res) =>
+      res.json().then((body) => {
+        if (body.success) {
+          showSuccessMessage(body.message)
+          $('#uploadFile').val('');
+          $('#uploadFileDiv .file-name').text('File uploaded');
+        } else {
+          showFailureMessage(body.message);
+        }
+      }))
+    .catch(err => showFailureMessage(err));
   };
   reader.readAsBinaryString(file);
 });
