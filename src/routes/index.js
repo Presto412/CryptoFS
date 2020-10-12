@@ -51,11 +51,17 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
     const { originalname, mimetype, size, path } = req.file;
     const recaptchaEnabled = envConfig.RECAPTCHA_ENABLED;
     const recaptchaSiteKey = envConfig.RECAPTCHA_SITE_KEY;
+    const render = (model) => {
+      if (req.accepts('json')) {
+        return res.json(model);
+      }
+      return res.render('index.ejs', model);
+    };
     
     if (recaptchaEnabled) {
       const recaptchaResult = await recaptchaValidate(envConfig.RECAPTCHA_SECRET_KEY, recaptchaToken);
       if (!recaptchaResult.success) {
-        return res.render('index.ejs', {
+        return render({
           title: 'CryptoFS',
           success: false,
           message: 'Recaptcha validation failed',
@@ -82,7 +88,7 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
         (obj) => obj.fileContentHash === fileAlreadyPresent.fileContentHash
       );
       if (userFileHashes.length !== 0) {
-        return res.render('index.ejs', {
+        return render({
           title: 'CryptoFS',
           success: false,
           message: 'File already exists',
@@ -91,7 +97,7 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
         });
       }
       await userService.createOrUpdateUserFileData(publicKey, fileData);
-      return res.render('index.ejs', {
+      return render({
         title: 'CryptoFS',
         success: true,
         message: 'File successfully linked',
@@ -102,7 +108,7 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
 
     const generatedFileContentHash = await fileUtil.getFileHash(path);
     if (fileContentHash !== generatedFileContentHash) {
-      return res.render('index.ejs', {
+      return render({
         title: 'CryptoFS',
         success: false,
         message: "File hash doesn't match sent hash",
@@ -114,7 +120,7 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
     await userService.createOrUpdateUserFileData(publicKey, fileData);
     await fileService.createFile(fileContentHash, path);
 
-    return res.render('index.ejs', {
+    return render({
       title: 'CryptoFS',
       success: true,
       message: 'Successfully uploaded file!',

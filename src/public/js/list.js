@@ -2,10 +2,43 @@ import $ from 'jquery';
 import { getSignedMessage, getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { DEFAULT_MESSAGE } from './defaults';
 import { showFailureMessage } from './nav';
+import { downloadBlob } from './util';
 
-const downloadFile = (fileContentHash) => {
-  updateHiddenFormContents('fileDownload', fileContentHash);
-  document.forms.fileDownload.submit();
+const downloadFile = (fileContentHash, filename) => {
+  const keyPair = getKeysFromStorage();
+  if (!keyPair) {
+    showFailureMessage('Please login to upload file');
+    return;
+  }
+  
+  const fileDownload = document.getElementById('fileDownload');
+  const signature = getSignedMessage();
+  const { publicKey } = keyPair;
+  const headers = {
+    Accept: 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
+  }
+  const formData = new URLSearchParams({
+    msg: DEFAULT_MESSAGE,
+    signature: signature.toString(),
+    publicKey: publicKey.toString(),
+    fileContentHash,
+  });
+
+  fetch(fileDownload.getAttribute('action'), {
+    method: fileDownload.getAttribute('method'),
+    body: formData,
+    headers,
+  }).then((res) => res.blob()).then(blob => blob.text()).then(blob => {
+    const key = forge.util.createBuffer(keyPair.privateKey.slice(0,16));
+    const iv = forge.util.createBuffer(keyPair.privateKey.slice(16,33));
+    const cipher = forge.cipher.createDecipher('AES-CBC', key);
+    cipher.start({iv});
+    cipher.update(forge.util.createBuffer(blob));
+    cipher.finish();
+    const fileContent = Buffer.from(cipher.output.getBytes(), 'binary');
+    downloadBlob(fileContent, filename, 'application/octet-stream');
+  });
 };
 
 const deleteFile = (fileContentHash) => {
@@ -43,7 +76,7 @@ $(document).ready(function () {
         const td4 = document.createElement('td');
         const downloadButton = document.createElement('button');
         $(downloadButton).click(() => {
-          downloadFile(element.fileContentHash);
+          downloadFile(element.fileContentHash, element.metaData.filename);
         });
         downloadButton.setAttribute('class', 'button is-info listDownloadButton');
         downloadButton.innerHTML = 'Download';
