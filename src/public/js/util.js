@@ -42,7 +42,7 @@ const hideElement = function (selector) {
  */
 const showElement = function (selector) {
   document.querySelectorAll(selector).forEach(el => {
-    el.style.display = 'block';
+    el.style.display = '';
   });
 }
 
