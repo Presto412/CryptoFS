@@ -26,4 +26,24 @@ const downloadBlob = function (data, fileName, mimeType) {
   }, 1000);
 };
 
-export { logout, downloadBlob };
+/**
+ * 
+ * @param {string} selector 
+ */
+const hideElement = function (selector) {
+  document.querySelectorAll(selector).forEach(el => {
+    el.style.display = 'none';
+  });
+}
+
+/**
+ * 
+ * @param {string} selector 
+ */
+const showElement = function (selector) {
+  document.querySelectorAll(selector).forEach(el => {
+    el.style.display = 'block';
+  });
+}
+
+export { logout, downloadBlob, hideElement, showElement };

@@ -1,5 +1,4 @@
-import $ from 'jquery';
-import { logout } from './util';
+import { logout, showElement, hideElement } from './util';
 import {
   setKeyToStorage,
   generateKeyValuePair,
@@ -10,38 +9,38 @@ import { PUBKEY_STORAGE_KEY, PRIVKEY_STORAGE_KEY } from './defaults';
 import { showFailureMessage, showSuccessMessage } from './showAlertMessage';
 
 const login = () => {
-  $('#keyManagementDiv').hide();
-  $('#login').hide();
-  $('#logout').show();
+  hideElement('#keyManagementDiv');
+  hideElement('#login');
+  showElement('#logout');
 };
 
-$('#navSuccess').hide();
-$('#navFailure').hide();
-$('#keyManagementDiv').hide();
+hideElement('#navSuccess');
+hideElement('#navFailure');
+hideElement('#keyManagementDiv');
 
 if (getKeysFromStorage()) {
-  $('#login').hide();
-  $('#logout').show();
+  hideElement('#login');
+  showElement('#logout');
 } else {
-  $('#logout').hide();
+  hideElement('#logout')
 }
 
-$('#logout').click(() => {
+document.querySelector('#logout').addEventListener('click', () => {
   logout();
   window.location.reload();
 });
 
-$('#login').click(() => {
-  $('#keyManagementDiv').show();
+document.querySelector('#login').addEventListener('click', () => {
+  showElement('#keyManagementDiv');
 });
 
-$('#generateKeyValuePairButton').click(() => {
+document.querySelector('#generateKeyValuePairButton').addEventListener('click', () => {
   generateKeyValuePair();
   window.location.reload();
 });
 
-$(document).ready(() => {
-  $('input[name=keyUpload]').change(function (evt) {
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('input[name=keyUpload]').addEventListener('change', (evt) => {
     const reader = new FileReader();
     reader.onload = function () {
       const keyPair = deserializeKeyPair(reader.result);

@@ -1,10 +1,11 @@
-import $ from 'jquery';
+import { showElement } from './util';
 
 export const showSuccessMessage = (message) => {
-  $('#navSuccessMessage').html(message);
-  $('#navSuccess').show();
+  document.querySelector('#navSuccessMessage').innerHTML = message;
+  showElement('#navSuccess');
 };
+
 export const showFailureMessage = (message) => {
-  $('#navFailureMessage').html(message);
-  $('#navFailure').show();
+  document.querySelector('#navFailureMessage').innerHTML = message;
+  showElement('#navFailure');
 };

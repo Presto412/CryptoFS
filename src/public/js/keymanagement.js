@@ -1,5 +1,4 @@
 import forge from 'forge';
-import $ from 'jquery';
 import {
   DEFAULT_MESSAGE,
   DEFAULT_ENCODING,
@@ -77,10 +76,10 @@ const updateHiddenFormContents = (
   signature = getSignedMessage(),
   message = DEFAULT_MESSAGE
 ) => {
-  $(`#${formId} input[name="fileContentHash"]`).val(fileContentHash);
-  $(`#${formId} input[name="msg"]`).val(message);
-  $(`#${formId} input[name="signature"]`).val(signature.toString());
-  $(`#${formId} input[name="publicKey"]`).val(publicKey.toString());
+  document.querySelector(`#${formId} input[name="fileContentHash"]`).value = fileContentHash;
+  document.querySelector(`#${formId} input[name="msg"]`).value = message;
+  document.querySelector(`#${formId} input[name="signature"]`).value = signature.toString();
+  document.querySelector(`#${formId} input[name="publicKey"]`).value = publicKey.toString();
 };
 
 export {
