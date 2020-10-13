@@ -9,7 +9,6 @@ const submitForm = () => {
     return;
   }
   const reader = new FileReader();
-  const recaptchaEnabled = document.querySelectorAll('#recaptcha').length;
   reader.onload = () => {
     let fileContent = reader.result;
 

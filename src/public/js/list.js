@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const td4 = document.createElement('td');
         const downloadButton = document.createElement('button');
         downloadButton.addEventListener('click', () => {
-          downloadFile(element.fileContentHash);
+          downloadFile(element.fileContentHash, element.metaData.filename);
         });
         downloadButton.setAttribute('class', 'button is-info listDownloadButton');
         downloadButton.innerHTML = 'Download';
