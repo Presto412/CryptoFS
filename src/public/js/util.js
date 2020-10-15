@@ -27,23 +27,23 @@ const downloadBlob = function (data, fileName, mimeType) {
 };
 
 /**
- * 
- * @param {string} selector 
+ *
+ * @param {string} selector
  */
 const hideElement = function (selector) {
-  document.querySelectorAll(selector).forEach(el => {
+  document.querySelectorAll(selector).forEach((el) => {
     el.style.display = 'none';
   });
-}
+};
 
 /**
- * 
- * @param {string} selector 
+ *
+ * @param {string} selector
  */
 const showElement = function (selector) {
-  document.querySelectorAll(selector).forEach(el => {
+  document.querySelectorAll(selector).forEach((el) => {
     el.style.display = '';
   });
-}
+};
 
 export { logout, downloadBlob, hideElement, showElement };

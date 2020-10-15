@@ -16,7 +16,7 @@ const downloadFile = (fileContentHash, filename) => {
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded',
-  }
+  };
   const formData = new URLSearchParams({
     msg: DEFAULT_MESSAGE,
     signature: signature.toString(),
@@ -28,16 +28,19 @@ const downloadFile = (fileContentHash, filename) => {
     method: fileDownload.getAttribute('method'),
     body: formData,
     headers,
-  }).then((res) => res.blob()).then(blob => blob.text()).then(blob => {
-    const key = forge.util.createBuffer(keyPair.privateKey.slice(0, 16));
-    const iv = forge.util.createBuffer(keyPair.privateKey.slice(16, 33));
-    const cipher = forge.cipher.createDecipher('AES-CBC', key);
-    cipher.start({ iv });
-    cipher.update(forge.util.createBuffer(blob));
-    cipher.finish();
-    const fileContent = Buffer.from(cipher.output.getBytes(), 'binary');
-    downloadBlob(fileContent, filename, 'application/octet-stream');
-  });
+  })
+    .then((res) => res.blob())
+    .then((blob) => blob.text())
+    .then((blob) => {
+      const key = forge.util.createBuffer(keyPair.privateKey.slice(0, 16));
+      const iv = forge.util.createBuffer(keyPair.privateKey.slice(16, 33));
+      const cipher = forge.cipher.createDecipher('AES-CBC', key);
+      cipher.start({ iv });
+      cipher.update(forge.util.createBuffer(blob));
+      cipher.finish();
+      const fileContent = Buffer.from(cipher.output.getBytes(), 'binary');
+      downloadBlob(fileContent, filename, 'application/octet-stream');
+    });
 };
 
 const deleteFile = (fileContentHash) => {
@@ -60,14 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
       msg: DEFAULT_MESSAGE,
       signature: signature.toString(),
       publicKey: publicKey.toString(),
-      'Content-Type': 'application/json;charset=utf-8'
-    }
+      'Content-Type': 'application/json;charset=utf-8',
+    },
   })
-    .then(res => res.json())
-    .then(response => {
+    .then((res) => res.json())
+    .then((response) => {
       const table = document.getElementById('table1');
 
-      response.map.forEach(element => {
+      response.map.forEach((element) => {
         const tr = document.createElement('tr');
 
         const td1 = document.createElement('td');
@@ -90,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteButton = document.createElement('button');
         deleteButton.addEventListener('click', () => {
           deleteFile(element.fileContentHash);
-        })
+        });
         deleteButton.setAttribute('class', 'button is-danger listDeleteButton');
         deleteButton.innerHTML = 'Delete';
         td5.appendChild(deleteButton);
@@ -103,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         table.appendChild(tr);
       });
     })
-    .catch(err => {
+    .catch((err) => {
       showFailureMessage(err.toString());
     });
 });

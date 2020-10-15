@@ -22,11 +22,11 @@ if (getKeysFromStorage()) {
   hideElement('#login');
   showElement('#logout');
 } else {
-  hideElement('#logout')
+  hideElement('#logout');
 }
 
 document.querySelector('#logout').addEventListener('click', () => {
-      logout();
+  logout();
   window.location.reload();
 });
 
