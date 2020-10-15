@@ -1,4 +1,3 @@
-import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { showSuccessMessage, showFailureMessage } from './showAlertMessage';
 
