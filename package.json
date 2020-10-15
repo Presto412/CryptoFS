@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./src/bin/www"
+    "start": "node ./src/bin/www",
+    "prettify": "prettier --write src/**/*.js",
+    "lint": "eslint \"src/**/*.js\""
   },
   "nodemonConfig": {
     "ignore": [
@@ -37,9 +39,15 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-prettier": "^3.1.4",
-    "nodemon": "^1.18.10",
+    "husky": "^4.3.0",
+    "nodemon": "^2.0.5",
     "prettier": "^2.0.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettify"
+    }
   }
 }
