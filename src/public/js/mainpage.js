@@ -59,7 +59,7 @@ const submitForm = () => {
 
 const doFileUpload = (e) => {
   e.preventDefault();
-  const recaptchaEnabled = $('#recaptcha').length;
+  const recaptchaEnabled = document.querySelectorAll('#recaptcha').length;
   if (recaptchaEnabled) {
     grecaptcha.execute();
   } else {
