@@ -14,6 +14,7 @@ const createOrUpdateUserFileData = async (publicKey, fileData) => {
         throw new Error(
           `Max upload limit reached. Can only upload a maximum of ${envConfig.MAX_NUM_UPLOADS} files.`
         );
+            console.log("nanaan")
       }
       user.filesUploaded.push(fileData);
     }
