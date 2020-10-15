@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./src/bin/www",
     "prettify": "prettier --write src/**/*.js",
-	  "lint": "eslint \"src/**/*.js\""
+    "lint": "eslint \"src/**/*.js\""
   },
   "nodemonConfig": {
     "ignore": [
@@ -39,18 +39,15 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
     "nodemon": "^2.0.5",
     "prettier": "^2.0.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
-  "gitHooks": {
-    "pre-commit": "npm run prettify && lint-staged"
-  },
-  "lint-staged": {
-    "*.{js}": [
-	  "npm run lint",
-    "git add"
-    ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettify"
+    }
   }
 }
