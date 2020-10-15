@@ -26,7 +26,7 @@ if (getKeysFromStorage()) {
 }
 
 document.querySelector('#logout').addEventListener('click', () => {
-  logout();
+      logout();
   window.location.reload();
 });
 
