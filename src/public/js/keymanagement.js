@@ -1,4 +1,3 @@
-import forge from 'forge';
 import {
   DEFAULT_MESSAGE,
   DEFAULT_ENCODING,

@@ -12,6 +12,9 @@
     "sourceType": "module"
   },
   "rules": {
-    "func-names": "off"
+    "func-names": "off",
+    "no-undef": "off",
+    "no-param-reassign": "off",
+    "no-return-assign": "off"
   }
 }

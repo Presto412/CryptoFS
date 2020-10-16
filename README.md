@@ -1,6 +1,5 @@
 # CryptoFS
 
-
 http://cryptofs.herokuapp.com
 
 A secure, cryptographic file upload system POC. It uses digital signature as a form of user authentication, and uses file content hashing to reduce duplication of files. All content stored is encrypted, except for the files themselves.
@@ -26,9 +25,9 @@ build environment:
     target_arch: x86_64
 
 ```
+
 ## Steps to run
 
 - Create a `.env` file like the `.env.example` file
 - Run `npm install`
 - Run `npm start`
-

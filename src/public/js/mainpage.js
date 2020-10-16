@@ -1,4 +1,3 @@
-import forge from 'forge';
 import { getKeysFromStorage, updateHiddenFormContents } from './keymanagement';
 import { showSuccessMessage, showFailureMessage } from './showAlertMessage';
 
@@ -42,24 +41,26 @@ const submitForm = () => {
         Accept: 'application/json',
       },
       body: formData,
-    }).then((res) =>
-      res.json().then((body) => {
-        if (body.success) {
-          showSuccessMessage(body.message);
-          document.querySelector('#uploadFile').value = '';
-          document.querySelector('#uploadFileDiv .file-name').textContent = 'File uploaded';
-        } else {
-          showFailureMessage(body.message);
-        }
-      }))
-      .catch(err => showFailureMessage(err));
+    })
+      .then((res) =>
+        res.json().then((body) => {
+          if (body.success) {
+            showSuccessMessage(body.message);
+            document.querySelector('#uploadFile').value = '';
+            document.querySelector('#uploadFileDiv .file-name').textContent = 'File uploaded';
+          } else {
+            showFailureMessage(body.message);
+          }
+        })
+      )
+      .catch((err) => showFailureMessage(err));
   };
   reader.readAsBinaryString(file);
-}
+};
 
 const doFileUpload = (e) => {
   e.preventDefault();
-  const recaptchaEnabled = $('#recaptcha').length;
+  const recaptchaEnabled = document.querySelectorAll('#recaptcha').length;
   if (recaptchaEnabled) {
     grecaptcha.execute();
   } else {

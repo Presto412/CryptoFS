@@ -14,25 +14,29 @@ const fileUtil = require('../util/file');
 
 const upload = multer(multerConfig);
 
-const recaptchaValidate = (secretKey, token) => new Promise((resolve, reject) => {
-  let body = '';
-  const request = https.request({
-    hostname: 'www.google.com',
-    path: `/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
-    method: 'POST',
-  }, (response) => {
-    response.on('data', d => body += d);
-    response.on('end', () => {
-      const parsedBody = JSON.parse(body);
-      if (response.statusCode === 200) {
-        resolve(parsedBody);
-      } else {
-        reject(parsedBody);
+const recaptchaValidate = (secretKey, token) =>
+  new Promise((resolve, reject) => {
+    let body = '';
+    const request = https.request(
+      {
+        hostname: 'www.google.com',
+        path: `/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
+        method: 'POST',
+      },
+      (response) => {
+        response.on('data', (d) => (body += d));
+        response.on('end', () => {
+          const parsedBody = JSON.parse(body);
+          if (response.statusCode === 200) {
+            resolve(parsedBody);
+          } else {
+            reject(parsedBody);
+          }
+        });
       }
-    });
+    );
+    request.end();
   });
-  request.end();
-});
 
 router.get('/', (req, res) => {
   res.render('index.ejs', {
@@ -47,7 +51,7 @@ router.get('/', (req, res) => {
 router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res, next) => {
   try {
     const { publicKey, filesUploaded } = req.user;
-    const { fileContentHash, ['g-recaptcha-response']:recaptchaToken } = req.body;
+    const { fileContentHash, 'g-recaptcha-response': recaptchaToken } = req.body;
     const { originalname, mimetype, size, path } = req.file;
     const recaptchaEnabled = envConfig.RECAPTCHA_ENABLED;
     const recaptchaSiteKey = envConfig.RECAPTCHA_SITE_KEY;
@@ -57,9 +61,12 @@ router.post('/upload', upload.single('uploadFile'), isVerified, async (req, res,
       }
       return res.render('index.ejs', model);
     };
-    
+
     if (recaptchaEnabled) {
-      const recaptchaResult = await recaptchaValidate(envConfig.RECAPTCHA_SECRET_KEY, recaptchaToken);
+      const recaptchaResult = await recaptchaValidate(
+        envConfig.RECAPTCHA_SECRET_KEY,
+        recaptchaToken
+      );
       if (!recaptchaResult.success) {
         return render({
           title: 'CryptoFS',
@@ -160,7 +167,7 @@ router.post('/download', isVerified, async (req, res, next) => {
         success: false,
         message: 'Cannot access this file',
         recaptchaEnabled: false,
-    });
+      });
     }
     const file = await fileService.findFileByContentHash(fileContentHash);
 
@@ -188,7 +195,11 @@ router.post('/delete', isVerified, async (req, res, next) => {
       .toObject()
       .filter((o) => o.fileContentHash !== fileContentHash);
     await req.user.save();
-    return res.render('list', { success: true, message: 'Successfully deleted file!', recaptchaEnabled: false });
+    return res.render('list', {
+      success: true,
+      message: 'Successfully deleted file!',
+      recaptchaEnabled: false,
+    });
   } catch (error) {
     return next(error);
   }
