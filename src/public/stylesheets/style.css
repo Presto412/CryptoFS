@@ -1,4 +1,13 @@
-html,
-body {
-  overflow-y: hidden;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #666 transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #666;
 }

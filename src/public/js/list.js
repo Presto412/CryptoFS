@@ -48,6 +48,11 @@ const deleteFile = (fileContentHash) => {
   document.forms.fileDelete.submit();
 };
 
+const formatDate = (milliseconds) => {
+  const date = new Date(parseInt(milliseconds, 10));
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const keyPair = getKeysFromStorage();
   if (!keyPair) {
@@ -56,6 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const signature = getSignedMessage();
   const { publicKey } = keyPair;
+  const tableBody = document.querySelector('#table1 tbody');
+  tableBody.innerHTML =
+    '<tr><td colspan="5"><progress class="progress is-info" max="100"></progress></td></tr>';
 
   fetch('/listFiles', {
     method: 'GET',
@@ -68,15 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
   })
     .then((res) => res.json())
     .then((response) => {
-      const table = document.getElementById('table1');
-
+      tableBody.textContent = '';
       response.map.forEach((element) => {
         const tr = document.createElement('tr');
 
         const td1 = document.createElement('td');
         td1.innerHTML = element.metaData.filename;
         const td2 = document.createElement('td');
-        td2.innerHTML = element.metaData.dateUploaded;
+        td2.innerHTML = formatDate(element.metaData.dateUploaded);
         const td3 = document.createElement('td');
         td3.innerHTML = element.fileContentHash;
 
@@ -103,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.appendChild(td3);
         tr.appendChild(td4);
         tr.appendChild(td5);
-        table.appendChild(tr);
+        tableBody.appendChild(tr);
       });
     })
     .catch((err) => {
