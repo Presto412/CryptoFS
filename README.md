@@ -28,6 +28,12 @@ build environment:
 
 ## Steps to run
 
+### With docker
+- Create a `.env` file like the `.env.example` file
+- Run `docker-compose up`
+
+
+### Without docker
 - Create a `.env` file like the `.env.example` file
 - Run `npm install`
 - Run `npm start`
